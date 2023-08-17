@@ -1,11 +1,12 @@
 package ru.kotov.AssignmentSubmissionApp.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "authority")
 public class Authority implements GrantedAuthority {
@@ -18,10 +19,6 @@ public class Authority implements GrantedAuthority {
 
     public Authority(String authority) {
         this.authority = authority;
-    }
-
-    public Authority() {
-
     }
 
     @Override

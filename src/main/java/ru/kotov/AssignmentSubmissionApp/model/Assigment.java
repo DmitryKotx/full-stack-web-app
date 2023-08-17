@@ -1,11 +1,12 @@
 package ru.kotov.AssignmentSubmissionApp.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "assigment")
 public class Assigment {
