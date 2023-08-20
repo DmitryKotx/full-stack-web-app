@@ -4,10 +4,26 @@ import { useLocalState } from '../util/useLocalStorage';
 
 const Dashboard = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
+    
+    function createAssigment() {
+        fetch("api/assignments", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+          method: "POST",   
+        })
+        .then((response) => {
+            if(response.status === 200) return response.json()
+        })
+        .then((data) => {
+            console.log(data);
+        });
+    }
+    
     return (
-        <div>
-            <h1>Hello world</h1>
-            <div>JWT Value is {jwt}</div>
+        <div style={{margin: "2em"}}>
+            <button onClick={() => createAssigment()}>Submit New Assignment</button>
         </div>
     );
 };
