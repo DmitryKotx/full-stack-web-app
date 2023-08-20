@@ -19,7 +19,7 @@ const Login = () => {
             username : username,
             password : password
         }
-        fetch("api/v1/auth/authenticate", {
+        fetch("api/authenticate", {
             headers: {
             'Access-Control-Allow-Origin': 'http://localhost:3000',
             'Content-Type': 'application/json',
