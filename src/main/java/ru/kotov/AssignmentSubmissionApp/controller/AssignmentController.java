@@ -3,23 +3,36 @@ package ru.kotov.AssignmentSubmissionApp.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.kotov.AssignmentSubmissionApp.model.Assignment;
 import ru.kotov.AssignmentSubmissionApp.model.User;
-import ru.kotov.AssignmentSubmissionApp.service.AssigmentService;
+import ru.kotov.AssignmentSubmissionApp.service.AssignmentService;
+
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/assignments")
 public class AssignmentController {
 
-    private final AssigmentService assigmentService;
+    private final AssignmentService assignmentService;
     @PostMapping("")
-    public ResponseEntity<?> createAssigment(@AuthenticationPrincipal User user) {
-        Assignment newAssignment = assigmentService.save(user);
+    public ResponseEntity<?> createAssignment(@AuthenticationPrincipal User user) {
+        Assignment newAssignment = assignmentService.save(user);
         return ResponseEntity.ok(newAssignment);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getAssignments(@AuthenticationPrincipal User user) {
+        Set<Assignment> assignments = assignmentService.findByUser(user);
+        return ResponseEntity.ok(assignments);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> getAssignment(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        Optional<Assignment> assignment = assignmentService.findById(id);
+        return ResponseEntity.ok(assignment.orElse(new Assignment()));
     }
 
 }

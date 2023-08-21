@@ -1,29 +1,58 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { useLocalState } from '../util/useLocalStorage';
+import { Link } from 'react-router-dom';
 
 
 const Dashboard = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
-    
-    function createAssigment() {
-        fetch("api/assignments", {
+    const [assignments, setAssignments] = useState(null);
+
+    useEffect(() => {
+        fetch("/api/assignments", {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${jwt}`
+            },
+            method: "GET",   
+          })
+          .then((response) => {
+              if(response.status === 200) return response.json()
+          })
+          .then((assignmentsData) => {
+              setAssignments(assignmentsData);
+          });
+    }, []);
+
+    function createAssignment() {
+        fetch("/api/assignments", {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${jwt}`
           },
-          method: "POST",   
+          method: "POST"   
         })
         .then((response) => {
             if(response.status === 200) return response.json()
         })
-        .then((data) => {
-            console.log(data);
+        .then((assignments) => {
+            window.location.href = `/assignments/${assignments.id}`;
         });
     }
     
     return (
         <div style={{margin: "2em"}}>
-            <button onClick={() => createAssigment()}>Submit New Assignment</button>
+            {assignments ? (
+                assignments.map((assignments) =>(
+                    <div>
+                        <Link to={`/assignments/${assignments.id}`}>
+                            Assignment ID: {assignments.id}
+                            </Link>
+                    </div>
+                ))
+            ) : (
+                <></>
+            )}
+            <button onClick={() => createAssignment()}>Submit New Assignment</button>
         </div>
     );
 };
