@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useLocalState } from '../util/useLocalStorage';
-import { func } from 'prop-types';
 
 const Login = () => {
 
@@ -19,12 +18,12 @@ const Login = () => {
             username : username,
             password : password
         }
-        fetch("api/authenticate", {
+        fetch("/api/authenticate", {
             headers: {
             'Access-Control-Allow-Origin': 'http://localhost:3000',
             'Content-Type': 'application/json',
             },
-            method : "post",
+            method : "POST",
             body : JSON.stringify(reqBody)
         })
         .then(response => {

@@ -18,7 +18,7 @@ public class AuthenticationController {
     public ResponseEntity<?> register(
             @RequestBody RegisterRequest request
     ) {
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, String.valueOf(authenticationService.register(request))).build();
+        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, String.valueOf(authenticationService.register(request).getToken())).build();
     }
 
     @PostMapping("/authenticate")
