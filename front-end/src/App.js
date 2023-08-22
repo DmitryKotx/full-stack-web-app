@@ -16,16 +16,16 @@ function App() {
           <PrivateRout>
             <Dashboard />
           </PrivateRout>
-      }/>
+        } />
       <Route
         path='/assignments/:id'
         element={
           <PrivateRout>
             <AssignmentView />
           </PrivateRout>
-      }/>
-      <Route path='/login' element={<Login />}/>
-      <Route path='/' element={<HomePage />}/>
+        } />
+      <Route path='/login' element={<Login />} />
+      <Route path='/' element={<HomePage />} />
     </Routes>
   );
 }

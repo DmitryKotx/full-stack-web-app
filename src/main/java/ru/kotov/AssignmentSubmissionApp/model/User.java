@@ -1,13 +1,12 @@
 package ru.kotov.AssignmentSubmissionApp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.kotov.AssignmentSubmissionApp.model.enums.Role;
-
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,9 +22,11 @@ public class User implements UserDetails {
     private Long Id;
     private LocalDate cohortStartDate;
     private String username;
+    @JsonIgnore
     private String password;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private List<Authority> authorities = new ArrayList<>();
 
     @Override
     public String getUsername() {
@@ -39,7 +40,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-       return List.of(new SimpleGrantedAuthority(role.name()));
+        return authorities;
     }
 
     @Override

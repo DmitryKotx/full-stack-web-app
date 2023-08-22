@@ -17,12 +17,12 @@ public class Authority implements GrantedAuthority {
     @ManyToOne(optional = false)
     private User user;
 
-    public Authority(String authority) {
-        this.authority = authority;
-    }
-
     @Override
     public String getAuthority() {
         return authority;
+    }
+
+    public Authority(String authority) {
+        this.authority = authority;
     }
 }

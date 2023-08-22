@@ -5,10 +5,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kotov.AssignmentSubmissionApp.model.Authority;
 import ru.kotov.AssignmentSubmissionApp.model.User;
-import ru.kotov.AssignmentSubmissionApp.model.enums.Role;
 import ru.kotov.AssignmentSubmissionApp.repository.UserRepository;
 import ru.kotov.AssignmentSubmissionApp.util.JwtUtil;
+import java.util.List;
+import static ru.kotov.AssignmentSubmissionApp.model.enums.Role.USER;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class AuthenticationService {
         var user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .authorities(List.of(new Authority(USER.name())))
                 .build();
         repository.save(user);
         var jwtToken = jwtUtil.generateToken(user);
