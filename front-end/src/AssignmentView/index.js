@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocalState } from '../util/useLocalStorage';
+import ajax from '../Services/fetchService';
 
 const AssignmentView = () => {
     const id = window.location.href.split("/assignments/")[1];
@@ -17,34 +18,17 @@ const AssignmentView = () => {
     }
 
     function save() {
-        fetch(`/api/assignments/${id}`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${jwt}`
-            },
-            method: "PUT",
-            body: JSON.stringify(assignment)
-        })
-            .then((response) => {
-                if (response.status === 200) return response.json()
-            })
+        ajax(`/api/assignments/${id}`, "PUT", jwt, assignment)
             .then((assignmentData) => {
                 setAssignment(assignmentData);
             });
     }
 
     useEffect(() => {
-        fetch(`/api/assignments/${id}`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${jwt}`
-            },
-            method: "GET",
-        })
-            .then((response) => {
-                if (response.status === 200) return response.json()
-            })
+        ajax(`/api/assignments/${id}`, "GET", jwt)
             .then((assignmentData) => {
+                if (assignmentData.branch === null) assignmentData.branch = "";
+                if (assignmentData.githubUrl === null) assignmentData.githubUrl = "";
                 setAssignment(assignmentData);
             });
     }, []);
@@ -59,15 +43,17 @@ const AssignmentView = () => {
                         GitHub URL: {" "}
                         <input
                             type='url'
-                            id='gitHubUrl'
-                            onChange={(e) => updateAssignment("githubUrl", e.target.value)} />
+                            id='githubUrl'
+                            onChange={(e) => updateAssignment("githubUrl", e.target.value)}
+                            value={assignment.githubUrl} />
                     </h3>
                     <h3>
                         Brahch: {" "}
                         <input
                             type='text'
                             id='branch'
-                            onChange={(e) => updateAssignment("branch", e.target.value)} />
+                            onChange={(e) => updateAssignment("branch", e.target.value)}
+                            value={assignment.branch} />
                     </h3>
                     <button onClick={() => save()}>Submit Assignment</button>
                 </>
