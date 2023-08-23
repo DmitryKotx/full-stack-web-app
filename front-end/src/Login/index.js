@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocalState } from '../util/useLocalStorage';
+import { Button, Col, Container, Row, Form } from 'react-bootstrap';
 
 const Login = () => {
 
@@ -45,21 +46,38 @@ const Login = () => {
 
     return (
         <>
-            <div>
-                <label htmlFor='username'>Username</label>
-                <input type='email' id='username' value={username}
-                    onChange={(event) => setUsername(event.target.value)} />
-            </div>
-            <div>
-                <label htmlFor='password'>Password</label>
-                <input type='password' id='password' value={password}
-                    onChange={(event) => setPassword(event.target.value)} />
-            </div>
-            <div>
-                <button id='submit' type='button' onClick={() => sendLoginRequest()}>
-                    Login
-                </button>
-            </div>
+            <Container className='mt-5'>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <label htmlFor='username' className='fs-4'>Username</label>
+                    <Form.Control
+                        type='email'
+                        id='username'
+                        size='lg'
+                        placeholder='Type in your email'
+                        value={username}
+                        onChange={(event) => setUsername(event.target.value)} />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <label htmlFor='password' className='fs-4'>Password</label>
+                    <Form.Control
+                        type='password'
+                        id='password'
+                        size='lg'
+                        placeholder='Type in your password'
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)} />
+                </Form.Group>
+                <Row>
+                    <Col className='mt-2'>
+                        <div>
+                            <Button id='submit' type='button' onClick={() => sendLoginRequest()}>
+                                Login
+                            </Button>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
         </>
     );
 };
