@@ -47,36 +47,54 @@ const Login = () => {
     return (
         <>
             <Container className='mt-5'>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <label htmlFor='username' className='fs-4'>Username</label>
-                    <Form.Control
-                        type='email'
-                        id='username'
-                        size='lg'
-                        placeholder='Type in your email'
-                        value={username}
-                        onChange={(event) => setUsername(event.target.value)} />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <label htmlFor='password' className='fs-4'>Password</label>
-                    <Form.Control
-                        type='password'
-                        id='password'
-                        size='lg'
-                        placeholder='Type in your password'
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)} />
-                </Form.Group>
-                <Row>
-                    <Col className='mt-2'>
+                <Row className='justify-content-center'>
+                    <Col md='8' lg='6'>
+                        <Form.Group className="mb-3" controlId="username">
+                            <label className='fs-4'>Username</label>
+                            <Form.Control
+                                type='email'
+                                id='username'
+                                size='lg'
+                                placeholder='Type in your email'
+                                value={username}
+                                onChange={(event) => setUsername(event.target.value)} />
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row className='justify-content-center'>
+                    <Col md='8' lg='6'>
+                        <Form.Group className="mb-3" controlId="password">
+                            <label className='fs-4'>Password</label>
+                            <Form.Control
+                                type='password'
+                                id='password'
+                                size='lg'
+                                placeholder='Type in your password'
+                                value={password}
+                                onChange={(event) => setPassword(event.target.value)} />
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row className='justify-content-center'>
+                    <Col md='8' lg='6' className='mt-2 d-flex flex-column gap-5 flex-md-row justify-content-md-between' >
                         <div>
-                            <Button id='submit' type='button' onClick={() => sendLoginRequest()}>
-                                Login
+                            <Button
+                                id='submit'
+                                type='button'
+                                onClick={() => sendLoginRequest()}> Login
+                            </Button>
+                        </div>
+                        <div>
+                            <Button
+                                variant='secondary'
+                                type='button'
+                                onClick={() => { window.location.href = "/" }}> Exit
                             </Button>
                         </div>
                     </Col>
                 </Row>
+
+
             </Container>
         </>
     );
