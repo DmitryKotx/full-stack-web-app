@@ -77,20 +77,16 @@ const Login = () => {
                 </Row>
                 <Row className='justify-content-center'>
                     <Col md='8' lg='6' className='mt-2 d-flex flex-column gap-5 flex-md-row justify-content-md-between' >
-                        <div>
-                            <Button
-                                id='submit'
-                                type='button'
-                                onClick={() => sendLoginRequest()}> Login
-                            </Button>
-                        </div>
-                        <div>
-                            <Button
-                                variant='secondary'
-                                type='button'
-                                onClick={() => { window.location.href = "/" }}> Exit
-                            </Button>
-                        </div>
+                        <Button
+                            id='submit'
+                            type='button'
+                            onClick={() => sendLoginRequest()}> Login
+                        </Button>
+                        <Button
+                            variant='secondary'
+                            type='button'
+                            onClick={() => { window.location.href = "/" }}> Exit
+                        </Button>
                     </Col>
                 </Row>
 
