@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import ru.kotov.AssignmentSubmissionApp.dto.AssignmentResponseDTO;
 import ru.kotov.AssignmentSubmissionApp.model.Assignment;
 import ru.kotov.AssignmentSubmissionApp.model.User;
 import ru.kotov.AssignmentSubmissionApp.service.AssignmentService;
@@ -32,7 +33,7 @@ public class AssignmentController {
     @GetMapping("{id}")
     public ResponseEntity<?> getAssignment(@PathVariable Long id, @AuthenticationPrincipal User user) {
         Optional<Assignment> assignment = assignmentService.findById(id);
-        return ResponseEntity.ok(assignment.orElse(new Assignment()));
+        return ResponseEntity.ok(new AssignmentResponseDTO(assignment.orElse(new Assignment())));
     }
     @PutMapping("{id}")
     public ResponseEntity<?> updateAssignment(@PathVariable Long id, @RequestBody Assignment assignment,

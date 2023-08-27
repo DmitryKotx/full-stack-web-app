@@ -12,6 +12,8 @@ const AssignmentView = () => {
         githubUrl: ""
     });
 
+    const [assignmentsEnums, setAssignmentsEnums] = useState([]);
+
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment }
         newAssignment[prop] = value;
@@ -30,7 +32,8 @@ const AssignmentView = () => {
             .then((assignmentData) => {
                 if (assignmentData.branch === null) assignmentData.branch = "";
                 if (assignmentData.githubUrl === null) assignmentData.githubUrl = "";
-                setAssignment(assignmentData);
+                setAssignment(assignmentData.assignment);
+                setAssignmentsEnums(assignmentData.assignmentEnums)
             });
     }, []);
 
@@ -59,9 +62,9 @@ const AssignmentView = () => {
                                 variant='info'
                                 title='Assignment 1'
                             >
-                                {["1", "2", "3"].map((assignmentNum) => (
-                                    <Dropdown.Item eventKey={assignmentNum}>
-                                        {assignmentNum}
+                                {assignmentsEnums.map((assignmentsEnum) => (
+                                    <Dropdown.Item eventKey={assignmentsEnum.number}>
+                                        {assignmentsEnum.number}
                                     </Dropdown.Item>
                                 ))}
 
