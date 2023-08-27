@@ -13,6 +13,7 @@ public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+    private Integer number;
     private String status;
     private String githubUrl;
     private String branch;

@@ -10,7 +10,7 @@ import ru.kotov.AssignmentSubmissionApp.model.User;
 import ru.kotov.AssignmentSubmissionApp.repository.UserRepository;
 import ru.kotov.AssignmentSubmissionApp.util.JwtUtil;
 import java.util.List;
-import static ru.kotov.AssignmentSubmissionApp.model.enums.Role.USER;
+import static ru.kotov.AssignmentSubmissionApp.enums.Role.USER;
 
 @Service
 @RequiredArgsConstructor
