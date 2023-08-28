@@ -3,7 +3,6 @@ package ru.kotov.AssignmentSubmissionApp.enums;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-
 public enum AssignmentEnum {
     ASSIGNMENT_1(1, "ASSIGNMENT 1"),
     ASSIGNMENT_2(2, "ASSIGNMENT 2"),
