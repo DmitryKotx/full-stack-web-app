@@ -1,11 +1,10 @@
-
 function ajax(url, method, jwt, body) {
     const fetchData = {
         headers: {
             "Content-Type": "application/json",
         },
-        method: method
-    }
+        method: method,
+    };
 
     if (jwt) {
         fetchData.headers.Authorization = `Bearer ${jwt}`;
@@ -20,4 +19,4 @@ function ajax(url, method, jwt, body) {
     });
 }
 
-export default ajax
+export default ajax;
