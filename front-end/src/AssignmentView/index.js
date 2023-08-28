@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import {
@@ -27,6 +27,8 @@ const AssignmentView = () => {
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
 
+    const prevAssignmentValue = useRef(assignment);
+
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
         newAssignment[prop] = value;
@@ -36,13 +38,25 @@ const AssignmentView = () => {
     function save() {
         if (assignment.status === assignmentStatuses[0].status) {
             updateAssignment("status", assignmentStatuses[1].status);
+        } else {
+            persist();
         }
+    }
+
+    function persist() {
         ajax(`/api/assignments/${id}`, "PUT", jwt, assignment).then(
             (assignmentData) => {
                 setAssignment(assignmentData);
             }
         );
     }
+
+    useEffect(() => {
+        if (prevAssignmentValue.current.status !== assignment.status) {
+            persist();
+        }
+        prevAssignmentValue.current = assignment;
+    }, [assignment]);
 
     useEffect(() => {
         ajax(`/api/assignments/${id}`, "GET", jwt).then((assignmentData) => {
