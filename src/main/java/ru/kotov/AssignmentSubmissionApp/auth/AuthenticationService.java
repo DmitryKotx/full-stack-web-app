@@ -9,8 +9,9 @@ import ru.kotov.AssignmentSubmissionApp.model.Authority;
 import ru.kotov.AssignmentSubmissionApp.model.User;
 import ru.kotov.AssignmentSubmissionApp.repository.UserRepository;
 import ru.kotov.AssignmentSubmissionApp.util.JwtUtil;
+import java.time.LocalDate;
 import java.util.List;
-import static ru.kotov.AssignmentSubmissionApp.enums.Role.USER;
+import static ru.kotov.AssignmentSubmissionApp.enums.Role.REVIEWER;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +25,9 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
                 .username(request.getUsername())
+                .cohortStartDate(LocalDate.now())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .authorities(List.of(new Authority(USER.name())))
+                .authorities(List.of(new Authority(REVIEWER.name())))
                 .build();
         repository.save(user);
         var jwtToken = jwtUtil.generateToken(user);
