@@ -35,11 +35,13 @@ const Dashboard = () => {
                     </div>
                 </Col>
             </Row>
+
             <div className="mb-5">
                 <Button size="lg" onClick={() => createAssignment()}>
                     Submit New Assignment
                 </Button>
             </div>
+
             {assignments ? (
                 <div
                     className="d-grid gap-5"
