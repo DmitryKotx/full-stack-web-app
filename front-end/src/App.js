@@ -27,7 +27,7 @@ function App() {
             <Route
                 path="/dashboard"
                 element={
-                    roles.find((role) => role === "REVIEWER") ? (
+                    roles && roles.find((role) => role === "REVIEWER") ? (
                         <PrivateRout>
                             <CodeReviewerDashboard />
                         </PrivateRout>

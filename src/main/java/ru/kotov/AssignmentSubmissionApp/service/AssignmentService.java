@@ -10,6 +10,8 @@ import ru.kotov.AssignmentSubmissionApp.repository.AssignmentRepository;
 import java.util.Optional;
 import java.util.Set;
 
+import static ru.kotov.AssignmentSubmissionApp.enums.Role.REVIEWER;
+
 @Service
 @RequiredArgsConstructor
 public class AssignmentService {
@@ -43,7 +45,13 @@ public class AssignmentService {
     }
 
     public Set<Assignment> findByUser(User user) {
-        return assignmentRepository.findByUser(user);
+        boolean hasCodeReviewerRole = user.getAuthorities()
+                .stream().anyMatch(auth -> REVIEWER.name().equals(auth.getAuthority()));
+        if(hasCodeReviewerRole) {
+            return assignmentRepository.findByCodeReviewer(user);
+        } else {
+            return assignmentRepository.findByUser(user);
+        }
     }
 
     public Optional<Assignment> findById(Long id) {

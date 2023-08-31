@@ -12,6 +12,7 @@ import ru.kotov.AssignmentSubmissionApp.util.JwtUtil;
 import java.time.LocalDate;
 import java.util.List;
 import static ru.kotov.AssignmentSubmissionApp.enums.Role.REVIEWER;
+import static ru.kotov.AssignmentSubmissionApp.enums.Role.USER;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class AuthenticationService {
                 .username(request.getUsername())
                 .cohortStartDate(LocalDate.now())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .authorities(List.of(new Authority(REVIEWER.name())))
+                .authorities(List.of(new Authority(USER.name())))
                 .build();
         repository.save(user);
         var jwtToken = jwtUtil.generateToken(user);
