@@ -2,22 +2,37 @@ import { useEffect, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
+import jwt_decode from "jwt-decode";
 
 const CodeReviewerDashboard = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const [assignments, setAssignments] = useState(null);
+
+    function claimsAssignment(assignment) {
+        const decodeJwt = jwt_decode(jwt);
+        const user = {
+            username: decodeJwt.sub,
+        };
+
+        assignment.codeReviewer = user;
+        assignment.status = "In review";
+        ajax(`/api/assignments/${assignment.id}`, "PUT", jwt, assignment).then(
+            (updatedAssignment) => {
+                const assignmentsCopy = [...assignments];
+                const index = assignmentsCopy.findIndex(
+                    (a) => a.id === assignment.id
+                );
+                assignmentsCopy[index] = updatedAssignment;
+                setAssignments(assignmentsCopy);
+            }
+        );
+    }
 
     useEffect(() => {
         ajax("/api/assignments", "GET", jwt).then((assignmentsData) => {
             setAssignments(assignmentsData);
         });
     }, []);
-
-    function createAssignment() {
-        ajax("/api/assignments", "POST", jwt).then((assignments) => {
-            window.location.href = `/assignments/${assignments.id}`;
-        });
-    }
 
     return (
         <Container>
@@ -92,10 +107,10 @@ const CodeReviewerDashboard = () => {
                                     <Button
                                         variant="secondary"
                                         onClick={() => {
-                                            window.location.href = `/assignments/${assignment.id}`;
+                                            claimsAssignment(assignment);
                                         }}
                                     >
-                                        Edit
+                                        Claims
                                     </Button>
                                 </Card.Body>
                             </Card>
