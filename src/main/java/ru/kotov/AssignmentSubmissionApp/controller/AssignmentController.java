@@ -8,9 +8,13 @@ import ru.kotov.AssignmentSubmissionApp.dto.AssignmentResponseDTO;
 import ru.kotov.AssignmentSubmissionApp.model.Assignment;
 import ru.kotov.AssignmentSubmissionApp.model.User;
 import ru.kotov.AssignmentSubmissionApp.service.AssignmentService;
+import ru.kotov.AssignmentSubmissionApp.service.UserService;
+import ru.kotov.AssignmentSubmissionApp.util.AuthorityUtil;
 
 import java.util.Optional;
 import java.util.Set;
+
+import static ru.kotov.AssignmentSubmissionApp.enums.Role.REVIEWER;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +22,8 @@ import java.util.Set;
 public class AssignmentController {
 
     private final AssignmentService assignmentService;
+    private final UserService userService;
+
     @PostMapping("")
     public ResponseEntity<?> createAssignment(@AuthenticationPrincipal User user) {
         Assignment newAssignment = assignmentService.save(user);
@@ -38,6 +44,14 @@ public class AssignmentController {
     @PutMapping("{id}")
     public ResponseEntity<?> updateAssignment(@PathVariable Long id, @RequestBody Assignment assignment,
                                               @AuthenticationPrincipal User user) {
+        if (assignment.getCodeReviewer() != null) {
+            User codeReviewer = assignment.getCodeReviewer();
+            codeReviewer = userService.findUserByUsername(codeReviewer.getUsername()).orElse(new User());
+
+            if(AuthorityUtil.hasRole(REVIEWER.name(), codeReviewer)) {
+                assignment.setCodeReviewer(codeReviewer);
+            }
+        }
         Assignment updateAssignment = assignmentService.save(assignment);
         return ResponseEntity.ok(updateAssignment);
     }
