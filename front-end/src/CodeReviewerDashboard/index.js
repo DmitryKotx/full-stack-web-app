@@ -8,6 +8,10 @@ const CodeReviewerDashboard = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const [assignments, setAssignments] = useState(null);
 
+    function editReview(assignment) {
+        window.location.href = `/assignments/${assignment.id}`;
+    }
+
     function claimsAssignment(assignment) {
         const decodeJwt = jwt_decode(jwt);
         const user = {
@@ -108,10 +112,10 @@ const CodeReviewerDashboard = () => {
                                         <Button
                                             variant="secondary"
                                             onClick={() => {
-                                                claimsAssignment(assignment);
+                                                editReview(assignment);
                                             }}
                                         >
-                                            Claims
+                                            Edit
                                         </Button>
                                     </Card.Body>
                                 </Card>
@@ -234,10 +238,10 @@ const CodeReviewerDashboard = () => {
                                         <Button
                                             variant="secondary"
                                             onClick={() => {
-                                                claimsAssignment(assignment);
+                                                window.location.href = `/assignments/${assignment.id}`;
                                             }}
                                         >
-                                            Claims
+                                            View
                                         </Button>
                                     </Card.Body>
                                 </Card>

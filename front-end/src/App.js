@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useLocalState } from "./util/useLocalStorage";
 import { useState } from "react";
 import CodeReviewerDashboard from "./CodeReviewerDashboard";
+import CodeReveiwAssignmentView from "./CodeReveiwAssignmentView";
 
 function App() {
     const [jwt, setJwt] = useLocalState("", "jwt");
@@ -42,9 +43,15 @@ function App() {
             <Route
                 path="/assignments/:id"
                 element={
-                    <PrivateRout>
-                        <AssignmentView />
-                    </PrivateRout>
+                    roles && roles.find((role) => role === "REVIEWER") ? (
+                        <PrivateRout>
+                            <CodeReveiwAssignmentView />
+                        </PrivateRout>
+                    ) : (
+                        <PrivateRout>
+                            <AssignmentView />
+                        </PrivateRout>
+                    )
                 }
             />
             <Route path="/login" element={<Login />} />
