@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import { Badge, Button, Card, Col, Row } from "react-bootstrap";
+import StatusBadge from "../StatusBadge";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const [assignments, setAssignments] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         ajax("/api/assignments", "GET", jwt).then((assignmentsData) => {
@@ -15,7 +18,7 @@ const Dashboard = () => {
 
     function createAssignment() {
         ajax("/api/assignments", "POST", jwt).then((assignments) => {
-            window.location.href = `/assignments/${assignments.id}`;
+            navigate(`/assignments/${assignments.id}`);
         });
     }
 
@@ -28,7 +31,7 @@ const Dashboard = () => {
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                             setJwt(null);
-                            window.location.href = "/login";
+                            navigate("/login");
                         }}
                     >
                         Logout
@@ -54,17 +57,7 @@ const Dashboard = () => {
                                     Assignment #{assignment.number}
                                 </Card.Title>
                                 <div className="d-flex align-items-start">
-                                    <Badge
-                                        pill
-                                        bg={
-                                            assignment.status === "Completed"
-                                                ? "success"
-                                                : "info"
-                                        }
-                                        style={{ fontSize: "1em" }}
-                                    >
-                                        {assignment.status}
-                                    </Badge>
+                                    <StatusBadge text={assignment.status} />
                                 </div>
                                 <Card.Text style={{ marginTop: "1em" }}>
                                     <p>
@@ -78,7 +71,9 @@ const Dashboard = () => {
                                 <Button
                                     variant="secondary"
                                     onClick={() => {
-                                        window.location.href = `/assignments/${assignment.id}`;
+                                        navigate(
+                                            `/assignments/${assignment.id}`
+                                        );
                                     }}
                                 >
                                     Edit

@@ -12,6 +12,8 @@ import {
     Form,
     Row,
 } from "react-bootstrap";
+import StatusBadge from "../StatusBadge";
+import { useNavigate } from "react-router-dom";
 
 const CodeReviewAssignmentView = () => {
     const id = window.location.href.split("/assignments/")[1];
@@ -23,6 +25,8 @@ const CodeReviewAssignmentView = () => {
         number: "",
         status: null,
     });
+
+    const navigate = useNavigate();
 
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
@@ -78,9 +82,7 @@ const CodeReviewAssignmentView = () => {
                     )}
                 </Col>
                 <Col>
-                    <Badge pill bg="info" style={{ fontSize: "1em" }}>
-                        {assignment.status}
-                    </Badge>
+                    <StatusBadge text={assignment.status} />
                 </Col>
             </Row>
             {assignment ? (
@@ -191,9 +193,7 @@ const CodeReviewAssignmentView = () => {
                         <Button
                             size="lg"
                             variant="secondary"
-                            onClick={() =>
-                                (window.location.href = "/dashboard")
-                            }
+                            onClick={() => navigate("/dashboard")}
                         >
                             Back
                         </Button>

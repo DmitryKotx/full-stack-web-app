@@ -3,13 +3,16 @@ import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
 import jwt_decode from "jwt-decode";
+import StatusBadge from "../StatusBadge";
+import { useNavigate } from "react-router-dom";
 
 const CodeReviewerDashboard = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const [assignments, setAssignments] = useState(null);
+    const navigate = useNavigate();
 
     function editReview(assignment) {
-        window.location.href = `/assignments/${assignment.id}`;
+        navigate(`/assignments/${assignment.id}`);
     }
 
     function claimsAssignment(assignment) {
@@ -47,7 +50,7 @@ const CodeReviewerDashboard = () => {
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                             setJwt(null);
-                            window.location.href = "/login";
+                            navigate("/login");
                         }}
                     >
                         Logout
@@ -91,13 +94,9 @@ const CodeReviewerDashboard = () => {
                                             Assignment #{assignment.number}
                                         </Card.Title>
                                         <div className="d-flex align-items-start">
-                                            <Badge
-                                                pill
-                                                bg="info"
-                                                style={{ fontSize: "1em" }}
-                                            >
-                                                {assignment.status}
-                                            </Badge>
+                                            <StatusBadge
+                                                text={assignment.status}
+                                            />
                                         </div>
                                         <Card.Text style={{ marginTop: "1em" }}>
                                             <p>
@@ -154,13 +153,9 @@ const CodeReviewerDashboard = () => {
                                             Assignment #{assignment.number}
                                         </Card.Title>
                                         <div className="d-flex align-items-start">
-                                            <Badge
-                                                pill
-                                                bg="info"
-                                                style={{ fontSize: "1em" }}
-                                            >
-                                                {assignment.status}
-                                            </Badge>
+                                            <StatusBadge
+                                                text={assignment.status}
+                                            />
                                         </div>
                                         <Card.Text style={{ marginTop: "1em" }}>
                                             <p>
@@ -217,13 +212,9 @@ const CodeReviewerDashboard = () => {
                                             Assignment #{assignment.number}
                                         </Card.Title>
                                         <div className="d-flex align-items-start">
-                                            <Badge
-                                                pill
-                                                bg="info"
-                                                style={{ fontSize: "1em" }}
-                                            >
-                                                {assignment.status}
-                                            </Badge>
+                                            <StatusBadge
+                                                text={assignment.status}
+                                            />
                                         </div>
                                         <Card.Text style={{ marginTop: "1em" }}>
                                             <p>
@@ -238,7 +229,9 @@ const CodeReviewerDashboard = () => {
                                         <Button
                                             variant="secondary"
                                             onClick={() => {
-                                                window.location.href = `/assignments/${assignment.id}`;
+                                                navigate(
+                                                    `/assignments/${assignment.id}`
+                                                );
                                             }}
                                         >
                                             View
