@@ -1,258 +1,209 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
-import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
-import jwt_decode from "jwt-decode";
+import {
+    Badge,
+    Button,
+    ButtonGroup,
+    Col,
+    Container,
+    Dropdown,
+    DropdownButton,
+    Form,
+    Row,
+} from "react-bootstrap";
 
-const CodeReviewerDashboard = () => {
+const CodeReviewAssignmentView = () => {
+    const id = window.location.href.split("/assignments/")[1];
+
     const [jwt, setJwt] = useLocalState("", "jwt");
-    const [assignments, setAssignments] = useState(null);
+    const [assignment, setAssignment] = useState({
+        branch: "",
+        githubUrl: "",
+        number: "",
+        status: null,
+    });
 
-    function editReview(assignment) {
-        window.location.href = `/assignments/${assignment.id}`;
+    const [assignmentEnums, setAssignmentEnums] = useState([]);
+    const [assignmentStatuses, setAssignmentStatuses] = useState([]);
+
+    const prevAssignmentValue = useRef(assignment);
+
+    function updateAssignment(prop, value) {
+        const newAssignment = { ...assignment };
+        newAssignment[prop] = value;
+        setAssignment(newAssignment);
     }
 
-    function claimsAssignment(assignment) {
-        const decodeJwt = jwt_decode(jwt);
-        const user = {
-            username: decodeJwt.sub,
-        };
+    function save(status) {
+        if (status && assignment.status !== status) {
+            updateAssignment("status", status);
+        } else {
+            persist();
+        }
+    }
 
-        assignment.codeReviewer = user;
-        assignment.status = "In Review";
-        ajax(`/api/assignments/${assignment.id}`, "PUT", jwt, assignment).then(
-            (updatedAssignment) => {
-                const assignmentsCopy = [...assignments];
-                const index = assignmentsCopy.findIndex(
-                    (a) => a.id === assignment.id
-                );
-                assignmentsCopy[index] = updatedAssignment;
-                setAssignments(assignmentsCopy);
+    function persist() {
+        ajax(`/api/assignments/${id}`, "PUT", jwt, assignment).then(
+            (assignmentData) => {
+                setAssignment(assignmentData);
             }
         );
     }
 
     useEffect(() => {
-        ajax("/api/assignments", "GET", jwt).then((assignmentsData) => {
-            setAssignments(assignmentsData);
+        if (prevAssignmentValue.current.status !== assignment.status) {
+            persist();
+        }
+        prevAssignmentValue.current = assignment;
+    }, [assignment]);
+
+    useEffect(() => {
+        ajax(`/api/assignments/${id}`, "GET", jwt).then((assignmentData) => {
+            if (assignmentData.branch === null) assignmentData.branch = "";
+            if (assignmentData.githubUrl === null)
+                assignmentData.githubUrl = "";
+            setAssignment(assignmentData.assignment);
+            setAssignmentEnums(assignmentData.assignmentEnums);
+            setAssignmentStatuses(assignmentData.statusEnums);
         });
     }, []);
 
     return (
-        <Container>
-            <Row>
+        <Container className="mt-5">
+            <Row className="d-flex align-items-center">
                 <Col>
-                    <div
-                        className="d-flex justify-content-end"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            setJwt(null);
-                            window.location.href = "/login";
-                        }}
-                    >
-                        Logout
-                    </div>
+                    {assignment.number && (
+                        <h1> Assignment {assignment.number} </h1>
+                    )}
+                </Col>
+                <Col>
+                    <Badge pill bg="info" style={{ fontSize: "1em" }}>
+                        {assignment.status}
+                    </Badge>
                 </Col>
             </Row>
-            <Row>
-                <Col>
-                    <div className="h1" style={{ marginBottom: "1em" }}>
-                        REVIEWER
-                    </div>
-                </Col>
-            </Row>
+            {assignment ? (
+                <>
+                    <Form.Group as={Row} className="my-3" controlId="githubUrl">
+                        <Form.Label column sm="3" md="2">
+                            GitHub URL:
+                        </Form.Label>
+                        <Col sm="9" md="8" lg="6">
+                            <Form.Control
+                                type="url"
+                                readOnly
+                                placeholder="https://github.com/username/repo-name"
+                                onChange={(e) =>
+                                    updateAssignment(
+                                        "githubUrl",
+                                        e.target.value
+                                    )
+                                }
+                                value={assignment.githubUrl}
+                            />
+                        </Col>
+                    </Form.Group>
 
-            <div className="assignment-wrapper in-review">
-                <div className="assignment-wrapper-title h3 px-2">
-                    In Review
-                </div>
-                {assignments &&
-                assignments.filter(
-                    (assignment) => assignment.status === "In Review"
-                ).length > 0 ? (
-                    <div
-                        className="d-grid gap-5"
-                        style={{
-                            gridTemplateColumns: "repeat(auto-fit, 18rem)",
-                        }}
+                    <Form.Group as={Row} className="mb-3" controlId="brahch">
+                        <Form.Label column sm="3" md="2">
+                            Brahch:
+                        </Form.Label>
+                        <Col sm="9" md="8" lg="6">
+                            <Form.Control
+                                type="text"
+                                readOnly
+                                placeholder="example_branch_name"
+                                onChange={(e) =>
+                                    updateAssignment("branch", e.target.value)
+                                }
+                                value={assignment.branch}
+                            />
+                        </Col>
+                    </Form.Group>
+                    <Form.Group
+                        as={Row}
+                        className="mb-3"
+                        controlId="codeReviewVideoUrl"
                     >
-                        {assignments
-                            .filter(
-                                (assignment) =>
-                                    assignment.status === "In Review"
-                            )
-                            .map((assignment) => (
-                                <Card
-                                    key={assignment.id}
-                                    style={{ width: "18rem" }}
-                                >
-                                    <Card.Body className="d-flex flex-column justify-content-around">
-                                        <Card.Title>
-                                            Assignment #{assignment.number}
-                                        </Card.Title>
-                                        <div className="d-flex align-items-start">
-                                            <Badge
-                                                pill
-                                                bg="info"
-                                                style={{ fontSize: "1em" }}
-                                            >
-                                                {assignment.status}
-                                            </Badge>
-                                        </div>
-                                        <Card.Text style={{ marginTop: "1em" }}>
-                                            <p>
-                                                <b>GitHub URL</b>:{" "}
-                                                {assignment.githubUrl}
-                                            </p>
-                                            <p>
-                                                <b>Branch</b>:{" "}
-                                                {assignment.branch}
-                                            </p>
-                                        </Card.Text>
-                                        <Button
-                                            variant="secondary"
-                                            onClick={() => {
-                                                editReview(assignment);
-                                            }}
-                                        >
-                                            Edit
-                                        </Button>
-                                    </Card.Body>
-                                </Card>
-                            ))}
+                        <Form.Label column sm="3" md="2">
+                            Video Review URL:
+                        </Form.Label>
+                        <Col sm="9" md="8" lg="6">
+                            <Form.Control
+                                type="text"
+                                placeholder="example_video_url"
+                                onChange={(e) =>
+                                    updateAssignment(
+                                        "codeReviewVideoUrl",
+                                        e.target.value
+                                    )
+                                }
+                                value={assignment.branch}
+                            />
+                        </Col>
+                    </Form.Group>
+
+                    <div className="d-flex gap-5">
+                        {assignment.status === "Completed" ? (
+                            <Button
+                                size="lg"
+                                variant="secondary"
+                                onClick={() =>
+                                    save(assignmentStatuses[2].status)
+                                }
+                            >
+                                Re-Claim
+                            </Button>
+                        ) : (
+                            <Button
+                                size="lg"
+                                onClick={() =>
+                                    save(assignmentStatuses[4].status)
+                                }
+                            >
+                                Complete Review
+                            </Button>
+                        )}
+
+                        {assignment.status === "Needs Update" ? (
+                            <Button
+                                size="lg"
+                                variant="secondary"
+                                onClick={() =>
+                                    save(assignmentStatuses[2].status)
+                                }
+                            >
+                                Re-Claim
+                            </Button>
+                        ) : (
+                            <Button
+                                size="lg"
+                                variant="danger"
+                                onClick={() =>
+                                    save(assignmentStatuses[3].status)
+                                }
+                            >
+                                Reject Assignment
+                            </Button>
+                        )}
+
+                        <Button
+                            size="lg"
+                            variant="secondary"
+                            onClick={() =>
+                                (window.location.href = "/dashboard")
+                            }
+                        >
+                            Back
+                        </Button>
                     </div>
-                ) : (
-                    <div>No assignments found</div>
-                )}
-            </div>
-            <div className="assignment-wrapper submitted">
-                <div className="assignment-wrapper-title h3 px-2">
-                    Awaiting Review
-                </div>
-                {assignments &&
-                assignments.filter(
-                    (assignment) => assignment.status === "Submitted"
-                ).length > 0 ? (
-                    <div
-                        className="d-grid gap-5"
-                        style={{
-                            gridTemplateColumns: "repeat(auto-fit, 18rem)",
-                        }}
-                    >
-                        {assignments
-                            .filter(
-                                (assignment) =>
-                                    assignment.status === "Submitted"
-                            )
-                            .map((assignment) => (
-                                <Card
-                                    key={assignment.id}
-                                    style={{ width: "18rem" }}
-                                >
-                                    <Card.Body className="d-flex flex-column justify-content-around">
-                                        <Card.Title>
-                                            Assignment #{assignment.number}
-                                        </Card.Title>
-                                        <div className="d-flex align-items-start">
-                                            <Badge
-                                                pill
-                                                bg="info"
-                                                style={{ fontSize: "1em" }}
-                                            >
-                                                {assignment.status}
-                                            </Badge>
-                                        </div>
-                                        <Card.Text style={{ marginTop: "1em" }}>
-                                            <p>
-                                                <b>GitHub URL</b>:{" "}
-                                                {assignment.githubUrl}
-                                            </p>
-                                            <p>
-                                                <b>Branch</b>:{" "}
-                                                {assignment.branch}
-                                            </p>
-                                        </Card.Text>
-                                        <Button
-                                            variant="secondary"
-                                            onClick={() => {
-                                                claimsAssignment(assignment);
-                                            }}
-                                        >
-                                            Claims
-                                        </Button>
-                                    </Card.Body>
-                                </Card>
-                            ))}
-                    </div>
-                ) : (
-                    <div>No assignments found</div>
-                )}
-            </div>
-            <div className="assignment-wrapper needs-update">
-                <div className="assignment-wrapper-title h3 px-2">
-                    Needs Update
-                </div>
-                {assignments &&
-                assignments.filter(
-                    (assignment) => assignment.status === "Needs Update"
-                ).length > 0 ? (
-                    <div
-                        className="d-grid gap-5"
-                        style={{
-                            gridTemplateColumns: "repeat(auto-fit, 18rem)",
-                        }}
-                    >
-                        {assignments
-                            .filter(
-                                (assignment) =>
-                                    assignment.status === "Needs Update"
-                            )
-                            .map((assignment) => (
-                                <Card
-                                    key={assignment.id}
-                                    style={{ width: "18rem" }}
-                                >
-                                    <Card.Body className="d-flex flex-column justify-content-around">
-                                        <Card.Title>
-                                            Assignment #{assignment.number}
-                                        </Card.Title>
-                                        <div className="d-flex align-items-start">
-                                            <Badge
-                                                pill
-                                                bg="info"
-                                                style={{ fontSize: "1em" }}
-                                            >
-                                                {assignment.status}
-                                            </Badge>
-                                        </div>
-                                        <Card.Text style={{ marginTop: "1em" }}>
-                                            <p>
-                                                <b>GitHub URL</b>:{" "}
-                                                {assignment.githubUrl}
-                                            </p>
-                                            <p>
-                                                <b>Branch</b>:{" "}
-                                                {assignment.branch}
-                                            </p>
-                                        </Card.Text>
-                                        <Button
-                                            variant="secondary"
-                                            onClick={() => {
-                                                window.location.href = `/assignments/${assignment.id}`;
-                                            }}
-                                        >
-                                            View
-                                        </Button>
-                                    </Card.Body>
-                                </Card>
-                            ))}
-                    </div>
-                ) : (
-                    <div>No assignments found</div>
-                )}
-            </div>
+                </>
+            ) : (
+                <></>
+            )}
         </Container>
     );
 };
 
-export default CodeReviewerDashboard;
+export default CodeReviewAssignmentView;
