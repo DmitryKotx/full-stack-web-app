@@ -130,7 +130,9 @@ const CodeReviewerDashboard = () => {
                 </div>
                 {assignments &&
                 assignments.filter(
-                    (assignment) => assignment.status === "Submitted"
+                    (assignment) =>
+                        assignment.status === "Submitted" ||
+                        assignment.status === "Resubmitted"
                 ).length > 0 ? (
                     <div
                         className="d-grid gap-5"
@@ -141,8 +143,13 @@ const CodeReviewerDashboard = () => {
                         {assignments
                             .filter(
                                 (assignment) =>
-                                    assignment.status === "Submitted"
+                                    assignment.status === "Submitted" ||
+                                    assignment.status === "Resubmitted"
                             )
+                            .sort((a, b) => {
+                                if (a.status === "Resubmitted") return -1;
+                                else return 1;
+                            })
                             .map((assignment) => (
                                 <Card
                                     key={assignment.id}
