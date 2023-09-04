@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import {
-    Badge,
     Button,
     ButtonGroup,
     Col,
@@ -13,12 +12,10 @@ import {
     Row,
 } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
-import { useNavigate } from "react-router-dom";
 
 const AssignmentView = () => {
     const id = window.location.href.split("/assignments/")[1];
 
-    const navigate = useNavigate();
     const [jwt, setJwt] = useLocalState("", "jwt");
     const [assignment, setAssignment] = useState({
         branch: "",
@@ -172,7 +169,9 @@ const AssignmentView = () => {
                                 <Button
                                     size="lg"
                                     variant="secondary"
-                                    onClick={() => navigate("/dashboard")}
+                                    onClick={() =>
+                                        (window.location.href = "/dashboard")
+                                    }
                                 >
                                     Back
                                 </Button>
@@ -186,7 +185,9 @@ const AssignmentView = () => {
                             <Button
                                 size="lg"
                                 variant="secondary"
-                                onClick={() => navigate("/dashboard")}
+                                onClick={() =>
+                                    (window.location.href = "/dashboard")
+                                }
                             >
                                 Back
                             </Button>
@@ -202,7 +203,9 @@ const AssignmentView = () => {
                             <Button
                                 size="lg"
                                 variant="secondary"
-                                onClick={() => navigate("/dashboard")}
+                                onClick={() =>
+                                    (window.location.href = "/dashboard")
+                                }
                             >
                                 Back
                             </Button>

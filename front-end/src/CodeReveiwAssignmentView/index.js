@@ -1,19 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
-import {
-    Badge,
-    Button,
-    ButtonGroup,
-    Col,
-    Container,
-    Dropdown,
-    DropdownButton,
-    Form,
-    Row,
-} from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
-import { useNavigate } from "react-router-dom";
 
 const CodeReviewAssignmentView = () => {
     const id = window.location.href.split("/assignments/")[1];
@@ -25,8 +14,6 @@ const CodeReviewAssignmentView = () => {
         number: "",
         status: null,
     });
-
-    const navigate = useNavigate();
 
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
@@ -193,7 +180,9 @@ const CodeReviewAssignmentView = () => {
                         <Button
                             size="lg"
                             variant="secondary"
-                            onClick={() => navigate("/dashboard")}
+                            onClick={() =>
+                                (window.location.href = "/dashboard")
+                            }
                         >
                             Back
                         </Button>
