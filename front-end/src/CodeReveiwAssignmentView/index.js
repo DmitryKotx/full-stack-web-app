@@ -3,10 +3,11 @@ import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
+import { useNavigate } from "react-router-dom";
 
 const CodeReviewAssignmentView = () => {
     const id = window.location.href.split("/assignments/")[1];
-
+    const navigate = useNavigate();
     const [jwt, setJwt] = useLocalState("", "jwt");
     const [assignment, setAssignment] = useState({
         branch: "",
@@ -180,9 +181,7 @@ const CodeReviewAssignmentView = () => {
                         <Button
                             size="lg"
                             variant="secondary"
-                            onClick={() =>
-                                (window.location.href = "/dashboard")
-                            }
+                            onClick={() => navigate("/dashboard")}
                         >
                             Back
                         </Button>

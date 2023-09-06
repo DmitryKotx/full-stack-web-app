@@ -7,18 +7,22 @@ import PrivateRout from "./PrivateRoute";
 import Login from "./Login";
 import AssignmentView from "./AssignmentView";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useLocalState } from "./util/useLocalStorage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CodeReviewerDashboard from "./CodeReviewerDashboard";
 import CodeReveiwAssignmentView from "./CodeReveiwAssignmentView";
+import { useUser } from "./UserProvider";
 
 function App() {
-    const [jwt, setJwt] = useLocalState("", "jwt");
-    const [roles, setRoles] = useState(getRolesFromJwt());
+    const [roles, setRoles] = useState([]);
+    const user = useUser();
+
+    useEffect(() => {
+        setRoles(getRolesFromJwt());
+    }, [user.jwt]);
 
     function getRolesFromJwt() {
-        if (jwt) {
-            const decodeJwt = jwt_decode(jwt);
+        if (user.jwt) {
+            const decodeJwt = jwt_decode(user.jwt);
             return decodeJwt.authorities;
         }
     }

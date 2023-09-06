@@ -12,10 +12,11 @@ import {
     Row,
 } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
+import { useNavigate } from "react-router-dom";
 
 const AssignmentView = () => {
     const id = window.location.href.split("/assignments/")[1];
-
+    const navigate = useNavigate();
     const [jwt, setJwt] = useLocalState("", "jwt");
     const [assignment, setAssignment] = useState({
         branch: "",
@@ -169,9 +170,7 @@ const AssignmentView = () => {
                                 <Button
                                     size="lg"
                                     variant="secondary"
-                                    onClick={() =>
-                                        (window.location.href = "/dashboard")
-                                    }
+                                    onClick={() => navigate("/dashboard")}
                                 >
                                     Back
                                 </Button>
@@ -185,9 +184,7 @@ const AssignmentView = () => {
                             <Button
                                 size="lg"
                                 variant="secondary"
-                                onClick={() =>
-                                    (window.location.href = "/dashboard")
-                                }
+                                onClick={() => navigate("/dashboard")}
                             >
                                 Back
                             </Button>
@@ -203,9 +200,7 @@ const AssignmentView = () => {
                             <Button
                                 size="lg"
                                 variant="secondary"
-                                onClick={() =>
-                                    (window.location.href = "/dashboard")
-                                }
+                                onClick={() => navigate("/dashboard")}
                             >
                                 Back
                             </Button>
