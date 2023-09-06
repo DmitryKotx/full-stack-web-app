@@ -27,8 +27,24 @@ const AssignmentView = () => {
 
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
-
+    const [comment, setComment] = useState({
+        text: "",
+        assignmnet: id,
+        user: jwt,
+    });
     const prevAssignmentValue = useRef(assignment);
+
+    function submitComment() {
+        ajax("/api/comments", "POST", jwt, comment).then((data) => {
+            console.log(data);
+        });
+    }
+
+    function updateComment(value) {
+        const commentCopy = { ...comment };
+        commentCopy.text = value;
+        setComment(commentCopy);
+    }
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -206,6 +222,15 @@ const AssignmentView = () => {
                             </Button>
                         </div>
                     )}
+                    <div className="mt-5">
+                        <textarea
+                            style={{ width: "100%", borderRadius: "0.25em" }}
+                            onChange={(e) => updateComment(e.target.value)}
+                        ></textarea>
+                        <Button onClick={() => submitComment()}>
+                            Post Comment
+                        </Button>
+                    </div>
                 </>
             ) : (
                 <></>
