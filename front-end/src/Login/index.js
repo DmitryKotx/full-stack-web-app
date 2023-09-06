@@ -1,16 +1,19 @@
-import React, { useState } from "react";
-import { useLocalState } from "../util/useLocalStorage";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../UserProvider";
 
 const Login = () => {
+    const user = useUser();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [jwt, setJwt] = useLocalState("", "jwt");
-
     const navigate = useNavigate();
-    console.log("username is: " + username);
-    console.log("password is: " + password);
+
+    useEffect(() => {
+        if (user.jwt) {
+            navigate("/dashboard");
+        }
+    }, [user.jwt]);
 
     function sendLoginRequest() {
         const reqBody = {
@@ -31,8 +34,8 @@ const Login = () => {
                 else return Promise.reject("Invalid login attempt");
             })
             .then(([body, headers]) => {
-                setJwt(headers.get("authorization"));
-                window.location.href = "/dashboard";
+                user.setJwt(headers.get("authorization"));
+                navigate("/dashboard");
             })
             .catch((message) => {
                 alert(message);

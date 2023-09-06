@@ -1,45 +1,54 @@
 import { useEffect, useState } from "react";
-import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import jwt_decode from "jwt-decode";
 import StatusBadge from "../StatusBadge";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../UserProvider";
 
 const CodeReviewerDashboard = () => {
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const user = useUser();
     const [assignments, setAssignments] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user.jwt) {
+            navigate("/login");
+        }
+    });
 
     function editReview(assignment) {
         navigate(`/assignments/${assignment.id}`);
     }
 
     function claimsAssignment(assignment) {
-        const decodeJwt = jwt_decode(jwt);
+        const decodeJwt = jwt_decode(user.jwt);
         const user = {
             username: decodeJwt.sub,
         };
 
         assignment.codeReviewer = user;
         assignment.status = "In Review";
-        ajax(`/api/assignments/${assignment.id}`, "PUT", jwt, assignment).then(
-            (updatedAssignment) => {
-                const assignmentsCopy = [...assignments];
-                const index = assignmentsCopy.findIndex(
-                    (a) => a.id === assignment.id
-                );
-                assignmentsCopy[index] = updatedAssignment;
-                setAssignments(assignmentsCopy);
-            }
-        );
+        ajax(
+            `/api/assignments/${assignment.id}`,
+            "PUT",
+            user.jwt,
+            assignment
+        ).then((updatedAssignment) => {
+            const assignmentsCopy = [...assignments];
+            const index = assignmentsCopy.findIndex(
+                (a) => a.id === assignment.id
+            );
+            assignmentsCopy[index] = updatedAssignment;
+            setAssignments(assignmentsCopy);
+        });
     }
 
     useEffect(() => {
-        ajax("/api/assignments", "GET", jwt).then((assignmentsData) => {
+        ajax("/api/assignments", "GET", user.jwt).then((assignmentsData) => {
             setAssignments(assignmentsData);
         });
-    }, []);
+    }, [user.jwt]);
 
     return (
         <Container>
@@ -49,7 +58,7 @@ const CodeReviewerDashboard = () => {
                         className="d-flex justify-content-end"
                         style={{ cursor: "pointer" }}
                         onClick={() => {
-                            setJwt(null);
+                            user.setJwt(null);
                             navigate("/login");
                         }}
                     >
