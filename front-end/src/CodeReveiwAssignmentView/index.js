@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUser } from "../UserProvider";
 
 const CodeReviewAssignmentView = () => {
-    const id = window.location.href.split("/assignments/")[1];
+    const { assignmentId } = useParams();
     const navigate = useNavigate();
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const user = useUser();
     const [assignment, setAssignment] = useState({
         branch: "",
         githubUrl: "",
@@ -36,11 +36,14 @@ const CodeReviewAssignmentView = () => {
     }
 
     function persist() {
-        ajax(`/api/assignments/${id}`, "PUT", jwt, assignment).then(
-            (assignmentData) => {
-                setAssignment(assignmentData);
-            }
-        );
+        ajax(
+            `/api/assignments/${assignmentId}`,
+            "PUT",
+            user.jwt,
+            assignment
+        ).then((assignmentData) => {
+            setAssignment(assignmentData);
+        });
     }
 
     useEffect(() => {
@@ -51,14 +54,16 @@ const CodeReviewAssignmentView = () => {
     }, [assignment]);
 
     useEffect(() => {
-        ajax(`/api/assignments/${id}`, "GET", jwt).then((assignmentData) => {
-            if (assignmentData.branch === null) assignmentData.branch = "";
-            if (assignmentData.githubUrl === null)
-                assignmentData.githubUrl = "";
-            setAssignment(assignmentData.assignment);
-            setAssignmentEnums(assignmentData.assignmentEnums);
-            setAssignmentStatuses(assignmentData.statusEnums);
-        });
+        ajax(`/api/assignments/${assignmentId}`, "GET", user.jwt).then(
+            (assignmentData) => {
+                if (assignmentData.branch === null) assignmentData.branch = "";
+                if (assignmentData.githubUrl === null)
+                    assignmentData.githubUrl = "";
+                setAssignment(assignmentData.assignment);
+                setAssignmentEnums(assignmentData.assignmentEnums);
+                setAssignmentStatuses(assignmentData.statusEnums);
+            }
+        );
     }, []);
 
     return (
