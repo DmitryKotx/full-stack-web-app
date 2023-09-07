@@ -45,7 +45,7 @@ function App() {
             />
 
             <Route
-                path="/assignments/:id"
+                path="/assignments/:assignmentId"
                 element={
                     roles && roles.find((role) => role === "REVIEWER") ? (
                         <PrivateRout>
