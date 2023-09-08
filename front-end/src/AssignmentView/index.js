@@ -32,16 +32,26 @@ const AssignmentView = () => {
         assignmentId: assignmentId != null ? parseInt(assignmentId) : null,
         user: user.jwt,
     });
+    const [comments, setComments] = useState([]);
     const prevAssignmentValue = useRef(assignment);
 
     function submitComment() {
         ajax("/api/comments", "POST", user.jwt, comment).then((data) => {
-            console.log(data);
+            const commentsCopy = [...comments];
+            commentsCopy.push(data);
+            setComments(commentsCopy);
         });
     }
     useEffect(() => {
-        console.log(comment);
-    }, [comment]);
+        ajax(
+            `/api/comments?assignmentId=${assignmentId}`,
+            "GET",
+            user.jwt,
+            null
+        ).then((commentsData) => {
+            setComments(commentsData);
+        });
+    }, []);
 
     function updateComment(value) {
         const commentCopy = { ...comment };
@@ -238,6 +248,16 @@ const AssignmentView = () => {
                         <Button onClick={() => submitComment()}>
                             Post Comment
                         </Button>
+                    </div>
+                    <div className="mt-5">
+                        {comments.map((comment) => (
+                            <div>
+                                <span style={{ fontWeight: "bold" }}>
+                                    {`[${comment.createdDate}] ${comment.createdBy.name}: `}
+                                </span>
+                                {comment.text}
+                            </div>
+                        ))}
                     </div>
                 </>
             ) : (
