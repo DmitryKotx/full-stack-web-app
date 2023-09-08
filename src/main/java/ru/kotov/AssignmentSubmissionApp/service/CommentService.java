@@ -11,6 +11,7 @@ import ru.kotov.AssignmentSubmissionApp.repository.CommentRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +28,9 @@ public class CommentService {
         comment.setCreatedBy(user);
         comment.setCreatedDate(LocalDateTime.now());
         return commentRepository.save(comment);
+    }
+
+    public Set<Comment> getCommentsByAssignment(Long assignmentId) {
+        return commentRepository.findByAssignmentId(assignmentId);
     }
 }
