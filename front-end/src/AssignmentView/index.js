@@ -13,6 +13,7 @@ import {
 import StatusBadge from "../StatusBadge";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../UserProvider";
+import Comment from "../Comment";
 
 const AssignmentView = () => {
     const { assignmentId } = useParams();
@@ -24,23 +25,53 @@ const AssignmentView = () => {
         number: "",
         status: null,
     });
-
-    const [assignmentEnums, setAssignmentEnums] = useState([]);
-    const [assignmentStatuses, setAssignmentStatuses] = useState([]);
-    const [comment, setComment] = useState({
+    const emptyComment = {
+        id: null,
         text: "",
         assignmentId: assignmentId != null ? parseInt(assignmentId) : null,
         user: user.jwt,
-    });
+    };
+    const [assignmentEnums, setAssignmentEnums] = useState([]);
+    const [assignmentStatuses, setAssignmentStatuses] = useState([]);
+    const [comment, setComment] = useState(emptyComment);
     const [comments, setComments] = useState([]);
     const prevAssignmentValue = useRef(assignment);
 
+    function handleDeleteComment(commentId) {
+        console.log("delete", commentId);
+    }
+    function handleEditComment(commentId) {
+        const i = comments.findIndex((comment) => comment.id === commentId);
+        const commentCopy = {
+            id: comments[i].id,
+            text: comments[i].text,
+            assignmentId: assignmentId != null ? parseInt(assignmentId) : null,
+            user: user.jwt,
+        };
+        setComment(commentCopy);
+    }
+
     function submitComment() {
-        ajax("/api/comments", "POST", user.jwt, comment).then((data) => {
-            const commentsCopy = [...comments];
-            commentsCopy.push(data);
-            setComments(commentsCopy);
-        });
+        if (comment.id) {
+            ajax(`/api/comments/${comment.id}`, "PUT", user.jwt, comment).then(
+                (data) => {
+                    const commentsCopy = [...comments];
+                    const i = comments.findIndex(
+                        (comment) => comment.id === data.id
+                    );
+                    commentsCopy[i] = data;
+                    setComments(commentsCopy);
+                    setComment(emptyComment);
+                }
+            );
+        } else {
+            ajax("/api/comments", "POST", user.jwt, comment).then((data) => {
+                const commentsCopy = [...comments];
+                commentsCopy.push(data);
+                setComments(commentsCopy);
+                setComment(emptyComment);
+            });
+        }
     }
     useEffect(() => {
         ajax(
@@ -244,6 +275,7 @@ const AssignmentView = () => {
                         <textarea
                             style={{ width: "100%", borderRadius: "0.25em" }}
                             onChange={(e) => updateComment(e.target.value)}
+                            value={comment.text}
                         ></textarea>
                         <Button onClick={() => submitComment()}>
                             Post Comment
@@ -251,12 +283,14 @@ const AssignmentView = () => {
                     </div>
                     <div className="mt-5">
                         {comments.map((comment) => (
-                            <div>
-                                <span style={{ fontWeight: "bold" }}>
-                                    {`[${comment.createdDate}] ${comment.createdBy.name}: `}
-                                </span>
-                                {comment.text}
-                            </div>
+                            <Comment
+                                createdDate={comment.createdDate}
+                                createdBy={comment.createdBy}
+                                text={comment.text}
+                                emitDeleteComment={handleDeleteComment}
+                                emitEditComment={handleEditComment}
+                                id={comment.id}
+                            />
                         ))}
                     </div>
                 </>
