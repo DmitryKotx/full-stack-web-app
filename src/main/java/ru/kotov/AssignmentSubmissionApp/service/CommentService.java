@@ -23,10 +23,13 @@ public class CommentService {
         Comment comment = new Comment();
         Optional<Assignment> assignment = assignmentRepository.findById(commentDTO.getAssignmentId());
 
+        comment.setId(commentDTO.getId());
         comment.setAssignment(assignment.orElse(null));
         comment.setText(commentDTO.getText());
         comment.setCreatedBy(user);
-        comment.setCreatedDate(LocalDateTime.now());
+        if(comment.getId() == null)
+            comment.setCreatedDate(LocalDateTime.now());
+
         return commentRepository.save(comment);
     }
 

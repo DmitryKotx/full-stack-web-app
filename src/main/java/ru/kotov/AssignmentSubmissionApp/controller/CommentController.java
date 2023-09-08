@@ -23,6 +23,12 @@ public class CommentController {
         return ResponseEntity.ok(comment);
     }
 
+    @PutMapping("{commentId}")
+    public ResponseEntity<Comment> updateComment(@RequestBody CommentDTO commentDTO, @AuthenticationPrincipal User user, @PathVariable String commentId) {
+        Comment comment = commentService.save(commentDTO, user);
+        return ResponseEntity.ok(comment);
+    }
+
     @GetMapping("")
     public ResponseEntity<Set<Comment>> getComments(@RequestParam Long assignmentId) {
         Set<Comment> comments = commentService.getCommentsByAssignment(assignmentId);
