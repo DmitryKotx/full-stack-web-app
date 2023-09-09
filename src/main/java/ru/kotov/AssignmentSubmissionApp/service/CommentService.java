@@ -33,6 +33,10 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    public void delete( Long commentId) {
+        commentRepository.deleteById(commentId);
+    }
+
     public Set<Comment> getCommentsByAssignment(Long assignmentId) {
         return commentRepository.findByAssignmentId(assignmentId);
     }

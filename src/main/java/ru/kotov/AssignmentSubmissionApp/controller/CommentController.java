@@ -28,6 +28,11 @@ public class CommentController {
         Comment comment = commentService.save(commentDTO, user);
         return ResponseEntity.ok(comment);
     }
+    @DeleteMapping("{commentId}")
+    public ResponseEntity<Comment> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal User user ) {
+        commentService.delete(commentId);
+        return ResponseEntity.ok(new Comment());
+    }
 
     @GetMapping("")
     public ResponseEntity<Set<Comment>> getComments(@RequestParam Long assignmentId) {
