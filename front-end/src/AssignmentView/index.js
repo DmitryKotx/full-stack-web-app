@@ -38,7 +38,17 @@ const AssignmentView = () => {
     const prevAssignmentValue = useRef(assignment);
 
     function handleDeleteComment(commentId) {
-        console.log("delete", commentId);
+        ajax(`/api/comments/${commentId}`, "DELETE", user.jwt).then(() => {
+            const commentsCopy = [...comments];
+            const i = commentsCopy.findIndex(
+                (comment) => comment.id === commentId
+            );
+            console.log(commentsCopy);
+            commentsCopy.splice(i, 1);
+            console.log(commentsCopy);
+
+            setComments(commentsCopy);
+        });
     }
     function handleEditComment(commentId) {
         const i = comments.findIndex((comment) => comment.id === commentId);
