@@ -14,7 +14,6 @@ import StatusBadge from "../StatusBadge";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../UserProvider";
 import Comment from "../Comment";
-import CommentContainer from "../CommentContainer";
 
 const AssignmentView = () => {
     const { assignmentId } = useParams();
@@ -26,10 +25,80 @@ const AssignmentView = () => {
         number: "",
         status: null,
     });
-
+    const emptyComment = {
+        id: null,
+        text: "",
+        assignmentId: assignmentId != null ? parseInt(assignmentId) : null,
+        user: user.jwt,
+    };
     const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
+    const [comment, setComment] = useState(emptyComment);
+    const [comments, setComments] = useState([]);
     const prevAssignmentValue = useRef(assignment);
+
+    function handleDeleteComment(commentId) {
+        ajax(`/api/comments/${commentId}`, "DELETE", user.jwt).then(() => {
+            const commentsCopy = [...comments];
+            const i = commentsCopy.findIndex(
+                (comment) => comment.id === commentId
+            );
+            console.log(commentsCopy);
+            commentsCopy.splice(i, 1);
+            console.log(commentsCopy);
+
+            setComments(commentsCopy);
+        });
+    }
+    function handleEditComment(commentId) {
+        const i = comments.findIndex((comment) => comment.id === commentId);
+        const commentCopy = {
+            id: comments[i].id,
+            text: comments[i].text,
+            assignmentId: assignmentId != null ? parseInt(assignmentId) : null,
+            user: user.jwt,
+        };
+        setComment(commentCopy);
+    }
+
+    function submitComment() {
+        if (comment.id) {
+            ajax(`/api/comments/${comment.id}`, "PUT", user.jwt, comment).then(
+                (data) => {
+                    const commentsCopy = [...comments];
+                    const i = comments.findIndex(
+                        (comment) => comment.id === data.id
+                    );
+                    commentsCopy[i] = data;
+                    setComments(commentsCopy);
+                    setComment(emptyComment);
+                }
+            );
+        } else {
+            ajax("/api/comments", "POST", user.jwt, comment).then((data) => {
+                const commentsCopy = [...comments];
+                commentsCopy.push(data);
+                setComments(commentsCopy);
+                setComment(emptyComment);
+            });
+        }
+    }
+    useEffect(() => {
+        ajax(
+            `/api/comments?assignmentId=${assignmentId}`,
+            "GET",
+            user.jwt,
+            null
+        ).then((commentsData) => {
+            setComments(commentsData);
+        });
+    }, []);
+
+    function updateComment(value) {
+        const commentCopy = { ...comment };
+        commentCopy.text = value;
+        setComment(commentCopy);
+    }
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -212,7 +281,28 @@ const AssignmentView = () => {
                             </Button>
                         </div>
                     )}
-                    <CommentContainer assignmentId={assignmentId} />
+                    <div className="mt-5">
+                        <textarea
+                            style={{ width: "100%", borderRadius: "0.25em" }}
+                            onChange={(e) => updateComment(e.target.value)}
+                            value={comment.text}
+                        ></textarea>
+                        <Button onClick={() => submitComment()}>
+                            Post Comment
+                        </Button>
+                    </div>
+                    <div className="mt-5">
+                        {comments.map((comment) => (
+                            <Comment
+                                createdDate={comment.createdDate}
+                                createdBy={comment.createdBy}
+                                text={comment.text}
+                                emitDeleteComment={handleDeleteComment}
+                                emitEditComment={handleEditComment}
+                                id={comment.id}
+                            />
+                        ))}
+                    </div>
                 </>
             ) : (
                 <></>
