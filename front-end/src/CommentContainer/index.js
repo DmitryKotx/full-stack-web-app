@@ -3,6 +3,8 @@ import { useUser } from "../UserProvider";
 import ajax from "../Services/fetchService";
 import { Button } from "react-bootstrap";
 import Comment from "../Comment";
+import { useInterval } from "../util/useInterval";
+import dayjs from "dayjs";
 
 const CommentContainer = (props) => {
     const user = useUser();
@@ -16,6 +18,18 @@ const CommentContainer = (props) => {
     };
     const [comment, setComment] = useState(emptyComment);
     const [comments, setComments] = useState([]);
+
+    useInterval(() => {
+        updateCommentRelativeTime();
+    }, 1000 * 5);
+
+    function updateCommentRelativeTime() {
+        const commentsCopy = [...comments];
+        commentsCopy.forEach(
+            (comment) => (comment.createdDate = dayjs(comment.createdDate))
+        );
+        setComments(commentsCopy);
+    }
 
     function handleEditComment(commentId) {
         const i = comments.findIndex((comment) => comment.id === commentId);
@@ -101,12 +115,10 @@ const CommentContainer = (props) => {
             <div className="mt-5">
                 {comments.map((comment) => (
                     <Comment
-                        createdDate={comment.createdDate}
-                        createdBy={comment.createdBy}
-                        text={comment.text}
+                        key={comment.id}
+                        commentData={comment}
                         emitDeleteComment={handleDeleteComment}
                         emitEditComment={handleEditComment}
-                        id={comment.id}
                     />
                 ))}
             </div>
