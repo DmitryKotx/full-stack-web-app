@@ -23,11 +23,11 @@ const CodeReviewerDashboard = () => {
 
     function claimsAssignment(assignment) {
         const decodeJwt = jwt_decode(user.jwt);
-        const user = {
+        const codeReviewer = {
             username: decodeJwt.sub,
         };
 
-        assignment.codeReviewer = user;
+        assignment.codeReviewer = codeReviewer;
         assignment.status = "In Review";
         ajax(
             `/api/assignments/${assignment.id}`,
