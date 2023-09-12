@@ -29,6 +29,8 @@ public class CommentService {
         comment.setCreatedBy(user);
         if(comment.getId() == null)
             comment.setCreatedDate(LocalDateTime.now());
+        else
+            comment.setCreatedDate(commentDTO.getCreatedDate());
 
         return commentRepository.save(comment);
     }
