@@ -4,11 +4,12 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../UserProvider";
+import CommentContainer from "../CommentContainer";
 
 const CodeReviewAssignmentView = () => {
+    const user = useUser();
     const { assignmentId } = useParams();
     const navigate = useNavigate();
-    const user = useUser();
     const [assignment, setAssignment] = useState({
         branch: "",
         githubUrl: "",
@@ -191,6 +192,7 @@ const CodeReviewAssignmentView = () => {
                             Back
                         </Button>
                     </div>
+                    <CommentContainer assignmentId={assignmentId} />
                 </>
             ) : (
                 <></>
