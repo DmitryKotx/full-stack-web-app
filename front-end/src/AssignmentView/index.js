@@ -26,9 +26,8 @@ const AssignmentView = () => {
         status: null,
     });
 
-    const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
-
+    const [assignments, setAssignments] = useState([]);
     const prevAssignmentValue = useRef(assignment);
 
     function updateAssignment(prop, value) {
@@ -61,6 +60,9 @@ const AssignmentView = () => {
             persist();
         }
         prevAssignmentValue.current = assignment;
+        ajax("/api/assignments", "GET", user.jwt).then((assignmentsData) => {
+            setAssignments(assignmentsData);
+        });
     }, [assignment]);
 
     useEffect(() => {
@@ -70,7 +72,6 @@ const AssignmentView = () => {
                 if (assignmentData.githubUrl === null)
                     assignmentData.githubUrl = "";
                 setAssignment(assignmentData.assignment);
-                setAssignmentEnums(assignmentData.assignmentEnums);
                 setAssignmentStatuses(assignmentData.statusEnums);
             }
         );
@@ -104,15 +105,15 @@ const AssignmentView = () => {
                                         : "Select an Assignment"
                                 }
                                 onSelect={(selectedElement) => {
-                                    updateAssignment("number", selectedElement);
+                                    window.location.href = `/assignments/${selectedElement}`;
                                 }}
                             >
-                                {assignmentEnums.map((assignmentsEnum) => (
+                                {assignments.map((assignment) => (
                                     <Dropdown.Item
-                                        key={assignmentsEnum.number}
-                                        eventKey={assignmentsEnum.number}
+                                        key={assignment.number}
+                                        eventKey={assignment.number}
                                     >
-                                        {assignmentsEnum.number}
+                                        {assignment.number}
                                     </Dropdown.Item>
                                 ))}
                             </DropdownButton>
