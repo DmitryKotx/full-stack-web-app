@@ -19,3 +19,17 @@
     padding: 1em;
     margin: 1em 0em;
 }
+
+.center-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 200px;
+}
