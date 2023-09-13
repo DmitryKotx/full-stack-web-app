@@ -17,7 +17,6 @@ const CodeReviewAssignmentView = () => {
         status: null,
     });
 
-    const [assignmentEnums, setAssignmentEnums] = useState([]);
     const [assignmentStatuses, setAssignmentStatuses] = useState([]);
 
     const prevAssignmentValue = useRef(assignment);
@@ -61,7 +60,6 @@ const CodeReviewAssignmentView = () => {
                 if (assignmentData.githubUrl === null)
                     assignmentData.githubUrl = "";
                 setAssignment(assignmentData.assignment);
-                setAssignmentEnums(assignmentData.assignmentEnums);
                 setAssignmentStatuses(assignmentData.statusEnums);
             }
         );
