@@ -98,8 +98,8 @@ const Register = () => {
 
                 <Row className="justify-content-center">
                     <Col
-                        md="12"
-                        lg="4"
+                        md="8"
+                        lg="6"
                         className="mt-3 d-flex flex-column gap-5 flex-md-row justify-content-md-between"
                     >
                         <div>
