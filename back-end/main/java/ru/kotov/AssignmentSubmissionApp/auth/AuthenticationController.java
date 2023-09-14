@@ -5,8 +5,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import ru.kotov.AssignmentSubmissionApp.enums.Role;
+import ru.kotov.AssignmentSubmissionApp.model.Authority;
 import ru.kotov.AssignmentSubmissionApp.model.User;
 import ru.kotov.AssignmentSubmissionApp.util.JwtUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,5 +38,9 @@ public class AuthenticationController {
         boolean isValidateToken = jwtUtil.isTokenValid(token, user);
         return ResponseEntity.ok(isValidateToken);
     }
-
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> getRoles() {
+        List<Role> roles = new ArrayList<>(List.of(Role.values()));
+        return ResponseEntity.ok(roles);
+    }
 }
