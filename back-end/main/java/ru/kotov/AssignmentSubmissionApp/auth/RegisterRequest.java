@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.kotov.AssignmentSubmissionApp.enums.Role;
 
 @Data
 @Builder
@@ -12,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class RegisterRequest {
     private String username;
     private String password;
+    private Role role;
 }
