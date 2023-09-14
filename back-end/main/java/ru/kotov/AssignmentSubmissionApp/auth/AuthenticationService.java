@@ -24,12 +24,14 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
+        Authority authority = new Authority(request.getRole().name());
         var user = User.builder()
                 .username(request.getUsername())
                 .cohortStartDate(LocalDate.now())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .authorities(List.of(new Authority(USER.name())))
+                .authorities(List.of(authority))
                 .build();
+        authority.setUser(user);
         repository.save(user);
         var jwtToken = jwtUtil.generateToken(user);
         return AuthenticationResponse.builder()
