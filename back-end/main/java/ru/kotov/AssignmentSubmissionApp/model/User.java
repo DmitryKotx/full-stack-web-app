@@ -2,6 +2,8 @@ package ru.kotov.AssignmentSubmissionApp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +24,7 @@ public class User implements UserDetails {
     private Long Id;
     private LocalDate cohortStartDate;
     @Column(unique = true)
+    @NotEmpty
     private String username;
     @JsonIgnore
     private String password;
