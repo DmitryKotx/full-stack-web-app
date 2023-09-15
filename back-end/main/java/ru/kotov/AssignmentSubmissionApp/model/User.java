@@ -28,7 +28,9 @@ public class User implements UserDetails {
     private String username;
     @JsonIgnore
     private String password;
-    private String name;
+    @Column(unique = true)
+    @NotEmpty
+    private String email;
     @JsonIgnore
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> authorities = new ArrayList<>();
