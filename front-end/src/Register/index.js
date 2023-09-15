@@ -8,6 +8,7 @@ const Register = () => {
     const user = useUser();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
     const [roles, setRoles] = useState([]);
     const [role, setRole] = useState("");
     const navigate = useNavigate();
@@ -30,6 +31,7 @@ const Register = () => {
     function sendLoginRequest() {
         const reqBody = {
             username: username,
+            email: email,
             password: password,
             role: role,
         };
@@ -69,10 +71,28 @@ const Register = () => {
                                 type="username"
                                 controlId="username"
                                 size="lg"
-                                placeholder="Type in your email"
+                                placeholder="Type in your username"
                                 value={username}
                                 onChange={(event) =>
                                     setUsername(event.target.value)
+                                }
+                            />
+                        </Form.Group>
+                    </Col>
+                </Row>
+
+                <Row className="justify-content-center">
+                    <Col md="8" lg="6">
+                        <Form.Group className="mb-3" controlId="email">
+                            <label className="fs-4">Email</label>
+                            <Form.Control
+                                type="email"
+                                controlId="email"
+                                size="lg"
+                                placeholder="Type in your email"
+                                value={email}
+                                onChange={(event) =>
+                                    setEmail(event.target.value)
                                 }
                             />
                         </Form.Group>
