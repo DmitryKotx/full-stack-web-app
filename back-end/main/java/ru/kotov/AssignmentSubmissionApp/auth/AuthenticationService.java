@@ -27,6 +27,7 @@ public class AuthenticationService {
         Authority authority = new Authority(request.getRole().name());
         var user = User.builder()
                 .username(request.getUsername())
+                .email(request.getEmail())
                 .cohortStartDate(LocalDate.now())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .authorities(List.of(authority))
