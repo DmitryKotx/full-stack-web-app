@@ -26,7 +26,7 @@ const Comment = (props) => {
         <>
             <div className="comment-bubble">
                 <div className="d-flex gap-5" style={{ fontWeight: "bold" }}>
-                    <div>{`${createdBy.name}`}</div>
+                    <div>{`${createdBy.username}`}</div>
                     {decodedJwt.sub === createdBy.username ? (
                         <>
                             <div
