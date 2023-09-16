@@ -2,8 +2,7 @@ package ru.kotov.AssignmentSubmissionApp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,11 +24,16 @@ public class User implements UserDetails {
     private LocalDate cohortStartDate;
     @Column(unique = true)
     @NotEmpty
+    @Size(min = 1, max = 30)
     private String username;
     @JsonIgnore
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])$", message = "The password does not meet the requirements")
+    @Size(min = 8, max = 40)
     private String password;
     @Column(unique = true)
     @NotEmpty
+    @Email
+    @Size(min = 10, max = 30)
     private String email;
     @JsonIgnore
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
