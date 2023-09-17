@@ -27,37 +27,46 @@ const Register = () => {
         setSelectedOption(event.target.value);
         setRole(role);
     }
+    function validatePassword(password) {
+        var passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,40}$/;
+        return passwordPattern.test(password);
+    }
 
     function sendLoginRequest() {
-        const reqBody = {
-            username: username,
-            email: email,
-            password: password,
-            role: role,
-        };
-        fetch("/api/register", {
-            headers: {
-                "Access-Control-Allow-Origin": "http://localhost:3000",
-                "Content-Type": "application/json",
-            },
-            method: "POST",
-            body: JSON.stringify(reqBody),
-        })
-            .then((response) => {
-                if (response.status === 200)
-                    return Promise.all([response.json, response.headers]);
-                else
-                    return Promise.reject(
-                        "Incorrect data is entered or the role is not selected"
-                    );
+        if (validatePassword(password)) {
+            const reqBody = {
+                username: username,
+                email: email,
+                password: password,
+                role: role,
+            };
+            fetch("/api/register", {
+                headers: {
+                    "Access-Control-Allow-Origin": "http://localhost:3000",
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
+                body: JSON.stringify(reqBody),
             })
-            .then(([body, headers]) => {
-                user.setJwt(headers.get("authorization"));
-                navigate("/dashboard");
-            })
-            .catch((message) => {
-                alert(message);
-            });
+                .then((response) => {
+                    if (response.status === 200)
+                        return Promise.all([response.json, response.headers]);
+                    else
+                        return Promise.reject(
+                            "Incorrect data is entered or the role is not selected"
+                        );
+                })
+                .then(([body, headers]) => {
+                    user.setJwt(headers.get("authorization"));
+                    navigate("/dashboard");
+                })
+                .catch((message) => {
+                    alert(message);
+                });
+        } else {
+            alert("password does not meet the criteria");
+            setPassword("");
+        }
     }
 
     return (
