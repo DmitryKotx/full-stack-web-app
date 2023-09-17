@@ -27,8 +27,6 @@ public class User implements UserDetails {
     @Size(min = 1, max = 30)
     private String username;
     @JsonIgnore
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])$", message = "The password does not meet the requirements")
-    @Size(min = 8, max = 40)
     private String password;
     @Column(unique = true)
     @NotEmpty
