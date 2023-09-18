@@ -64,7 +64,7 @@ const Register = () => {
                     alert(message);
                 });
         } else {
-            alert("password does not meet the criteria");
+            alert("Password does not meet the criteria!");
             setPassword("");
         }
     }
