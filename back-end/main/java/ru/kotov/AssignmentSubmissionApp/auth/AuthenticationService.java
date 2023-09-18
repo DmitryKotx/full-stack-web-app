@@ -11,9 +11,8 @@ import ru.kotov.AssignmentSubmissionApp.repository.UserRepository;
 import ru.kotov.AssignmentSubmissionApp.util.JwtUtil;
 import java.time.LocalDate;
 import java.util.List;
-import static ru.kotov.AssignmentSubmissionApp.enums.Role.REVIEWER;
-import static ru.kotov.AssignmentSubmissionApp.enums.Role.USER;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -52,5 +51,12 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    public boolean isValidPassword(String password) {
+        String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,40}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 }
