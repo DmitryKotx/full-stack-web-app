@@ -5,6 +5,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import ru.kotov.AssignmentSubmissionApp.model.Authority;
 import ru.kotov.AssignmentSubmissionApp.model.User;
 import ru.kotov.AssignmentSubmissionApp.repository.UserRepository;
@@ -22,7 +24,10 @@ public class AuthenticationService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(RegisterRequest request, BindingResult bindingResult) {
+        if(!isValidPassword(request.getPassword())) {
+            bindingResult.addError(new ObjectError("password", "wrong password!"));
+        }
         Authority authority = new Authority(request.getRole().name());
         var user = User.builder()
                 .username(request.getUsername())
