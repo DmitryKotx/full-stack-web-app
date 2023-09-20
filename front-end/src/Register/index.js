@@ -27,45 +27,64 @@ const Register = () => {
         setSelectedOption(event.target.value);
         setRole(role);
     }
-    function validatePassword(password) {
-        var passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,40}$/;
-        return passwordPattern.test(password);
+    function isValidPassword(password) {
+        return password.length >= 8 && password.length <= 40;
+    }
+    function isValidReqBody(reqBody) {
+        return (
+            reqBody.username !== "" &&
+            reqBody.email !== "" &&
+            reqBody.role !== ""
+        );
     }
 
     function sendLoginRequest() {
-        if (validatePassword(password)) {
-            const reqBody = {
-                username: username,
-                email: email,
-                password: password,
-                role: role,
-            };
-            fetch("/api/register", {
-                headers: {
-                    "Access-Control-Allow-Origin": "http://localhost:3000",
-                    "Content-Type": "application/json",
-                },
-                method: "POST",
-                body: JSON.stringify(reqBody),
-            })
-                .then((response) => {
-                    if (response.status === 200)
-                        return Promise.all([response.json, response.headers]);
-                    else
-                        return Promise.reject(
-                            "Incorrect data is entered or the role is not selected"
-                        );
+        const reqBody = {
+            username: username,
+            email: email,
+            password: password,
+            role: role,
+        };
+        if (isValidReqBody(reqBody)) {
+            if (isValidPassword(password)) {
+                fetch("/api/register", {
+                    headers: {
+                        "Access-Control-Allow-Origin": "http://localhost:3000",
+                        "Content-Type": "application/json",
+                    },
+                    method: "POST",
+                    body: JSON.stringify(reqBody),
                 })
-                .then(([body, headers]) => {
-                    user.setJwt(headers.get("authorization"));
-                    navigate("/dashboard");
-                })
-                .catch((message) => {
-                    alert(message);
-                });
+                    .then((response) => {
+                        if (response.status === 200 || response.status === 401)
+                            return Promise.all([
+                                response.json(),
+                                response.headers,
+                            ]);
+                        else
+                            return Promise.reject(
+                                "Possible errors:\n" +
+                                    " 1) The name or email is already taken\n" +
+                                    "2) Email is not correct\n"
+                            );
+                    })
+                    .then(([body, headers]) => {
+                        if (JSON.stringify(body) === "{}") {
+                            user.setJwt(headers.get("authorization"));
+                            navigate("/dashboard");
+                        } else {
+                            alert(body.password);
+                        }
+                    })
+                    .catch((message) => {
+                        alert(message);
+                    });
+            } else {
+                alert("The password length must be between 8 and 40!");
+                setPassword("");
+            }
         } else {
-            alert("Password does not meet the criteria!");
-            setPassword("");
+            alert("All fields must be filled in and the role selected!");
         }
     }
 
