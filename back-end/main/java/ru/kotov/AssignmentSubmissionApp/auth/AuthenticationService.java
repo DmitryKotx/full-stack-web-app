@@ -26,7 +26,12 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request, BindingResult bindingResult) {
         if(!isValidPassword(request.getPassword())) {
-            bindingResult.addError(new ObjectError("password", "wrong password!"));
+            bindingResult.rejectValue("password","",
+                    "The password does not meet the criteria:\n" +
+                    "1) at least one lowercase Latin letter\n" +
+                    "2) at least one capital Latin letter\n" +
+                    "3)at least one digit");
+            return new AuthenticationResponse();
         }
         Authority authority = new Authority(request.getRole().name());
         var user = User.builder()
