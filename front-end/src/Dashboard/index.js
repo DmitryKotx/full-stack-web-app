@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import ajax from "../Services/fetchService";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Pagination, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
 
 const Dashboard = () => {
     const user = useUser();
-    const [assignments, setAssignments] = useState(null);
+    const [assignments, setAssignments] = useState([]);
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 8;
+    const assignmentsForPage = fillAssignmentsForPage();
+    const pageCount = Math.ceil(assignments.length / itemsPerPage);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         ajax("/api/assignments", "GET", user.jwt).then((assignmentsData) => {
             setAssignments(assignmentsData);
         });
+
         if (!user.jwt) navigate("/login");
     }, [user.jwt]);
 
@@ -23,8 +29,18 @@ const Dashboard = () => {
         });
     }
 
+    function fillAssignmentsForPage() {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        return assignments.slice(startIndex, endIndex);
+    }
+    function setCurrentPage(selectedPage) {
+        setPage(selectedPage);
+    }
+
     return (
-        <div style={{ margin: "2em" }}>
+        <div style={{ margin: "1em" }}>
             <Row>
                 <Col>
                     <div
@@ -40,18 +56,18 @@ const Dashboard = () => {
                 </Col>
             </Row>
 
-            <div className="mb-5">
+            <div className="mb-4">
                 <Button size="lg" onClick={() => createAssignment()}>
                     Submit New Assignment
                 </Button>
             </div>
 
-            {assignments ? (
+            {assignmentsForPage ? (
                 <div
                     className="d-grid gap-5"
                     style={{ gridTemplateColumns: "repeat(auto-fit, 18rem)" }}
                 >
-                    {assignments.map((assignment) => (
+                    {assignmentsForPage.map((assignment) => (
                         <Card key={assignment.id} style={{ width: "18rem" }}>
                             <Card.Body className="d-flex flex-column justify-content-around">
                                 <Card.Title>
@@ -86,6 +102,28 @@ const Dashboard = () => {
             ) : (
                 <></>
             )}
+            <div
+                style={{
+                    position: "fixed",
+                    bottom: "40px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                }}
+            >
+                <Pagination>
+                    <Pagination.Prev />
+                    {[...Array(pageCount)].map((_, index) => (
+                        <Pagination.Item
+                            key={index + 1}
+                            active={index + 1 === page}
+                            onClick={() => setPage(index + 1)}
+                        >
+                            {index + 1}
+                        </Pagination.Item>
+                    ))}
+                    <Pagination.Next />
+                </Pagination>
+            </div>
         </div>
     );
 };
