@@ -9,6 +9,8 @@ const Register = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const [isValidPassword, setValidPassword] = useState(true);
+
     const [roles, setRoles] = useState([]);
     const [role, setRole] = useState("");
     const navigate = useNavigate();
@@ -27,7 +29,7 @@ const Register = () => {
         setSelectedOption(event.target.value);
         setRole(role);
     }
-    function isValidPassword(password) {
+    function checkPassword(password) {
         return password.length >= 8 && password.length <= 40;
     }
     function isValidReqBody(reqBody) {
@@ -46,7 +48,8 @@ const Register = () => {
             role: role,
         };
         if (isValidReqBody(reqBody)) {
-            if (isValidPassword(password)) {
+            if (checkPassword(password)) {
+                setValidPassword(true);
                 fetch("/api/register", {
                     headers: {
                         "Access-Control-Allow-Origin": "http://localhost:3000",
@@ -80,7 +83,7 @@ const Register = () => {
                         alert(message);
                     });
             } else {
-                alert("The password length must be between 8 and 40!");
+                setValidPassword(false);
                 setPassword("");
             }
         } else {
@@ -139,7 +142,14 @@ const Register = () => {
                                 onChange={(event) =>
                                     setPassword(event.target.value)
                                 }
+                                isInvalid={!isValidPassword}
                             />
+                            {!isValidPassword && (
+                                <div className="invalid-feedback">
+                                    The password length must be between 8 and
+                                    40!
+                                </div>
+                            )}
                         </Form.Group>
                     </Col>
                 </Row>
@@ -173,6 +183,15 @@ const Register = () => {
                             />
                             {roles[1]}
                         </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {!isValidPassword && (
+                            <div className="invalid-feedback">
+                                The password length must be between 8 and 40!
+                            </div>
+                        )}
                     </Col>
                 </Row>
                 <Row className="justify-content-center">
