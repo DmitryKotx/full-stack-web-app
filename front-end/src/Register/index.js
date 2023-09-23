@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../UserProvider";
 import { useNavigate } from "react-router-dom";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import {
+    Button,
+    Col,
+    Container,
+    Form,
+    Overlay,
+    Row,
+    Tooltip,
+} from "react-bootstrap";
 import ajax from "../Services/fetchService";
 
 const Register = () => {
@@ -9,10 +17,12 @@ const Register = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-    const [isValidPassword, setValidPassword] = useState(true);
-
+    const [usernameError, setUsernameError] = useState(null);
+    const [passwordError, setPasswordError] = useState(null);
+    const [emailError, setEmailError] = useState(null);
+    const [roleError, setRoleError] = useState(null);
     const [roles, setRoles] = useState([]);
-    const [role, setRole] = useState("");
+    const [role, setRole] = useState(null);
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState("");
 
@@ -29,16 +39,6 @@ const Register = () => {
         setSelectedOption(event.target.value);
         setRole(role);
     }
-    function checkPassword(password) {
-        return password.length >= 8 && password.length <= 40;
-    }
-    function isValidReqBody(reqBody) {
-        return (
-            reqBody.username !== "" &&
-            reqBody.email !== "" &&
-            reqBody.role !== ""
-        );
-    }
 
     function sendLoginRequest() {
         const reqBody = {
@@ -47,48 +47,44 @@ const Register = () => {
             password: password,
             role: role,
         };
-        if (isValidReqBody(reqBody)) {
-            if (checkPassword(password)) {
-                setValidPassword(true);
-                fetch("/api/register", {
-                    headers: {
-                        "Access-Control-Allow-Origin": "http://localhost:3000",
-                        "Content-Type": "application/json",
-                    },
-                    method: "POST",
-                    body: JSON.stringify(reqBody),
-                })
-                    .then((response) => {
-                        if (response.status === 200 || response.status === 401)
-                            return Promise.all([
-                                response.json(),
-                                response.headers,
-                            ]);
-                        else
-                            return Promise.reject(
-                                "Possible errors:\n" +
-                                    " 1) The name or email is already taken\n" +
-                                    "2) Email is not correct\n"
-                            );
-                    })
-                    .then(([body, headers]) => {
-                        if (JSON.stringify(body) === "{}") {
-                            user.setJwt(headers.get("authorization"));
-                            navigate("/dashboard");
-                        } else {
-                            alert(body.password);
-                        }
-                    })
-                    .catch((message) => {
-                        alert(message);
-                    });
-            } else {
-                setValidPassword(false);
-                setPassword("");
-            }
-        } else {
-            alert("All fields must be filled in and the role selected!");
-        }
+
+        fetch("/api/register", {
+            headers: {
+                "Access-Control-Allow-Origin": "http://localhost:3000",
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(reqBody),
+        })
+            .then((response) => {
+                if (response.status === 200 || response.status === 401)
+                    return Promise.all([response.json(), response.headers]);
+                else return Promise.reject("Unknow error");
+            })
+            .then(([body, headers]) => {
+                if (JSON.stringify(body) === "{}") {
+                    user.setJwt(headers.get("authorization"));
+                    navigate("/dashboard");
+                } else {
+                    if (body.email) {
+                        setEmailError(body.email);
+                        console.log(body.email);
+                    }
+                    if (body.username) {
+                        setUsernameError(body.username);
+                        console.log(body.username);
+                    }
+                    if (body.password) {
+                        setPasswordError(body.password);
+                        console.log(body.password);
+                    }
+                    if (body.role) {
+                        setRoleError(body.role);
+                        console.log(body.role);
+                    }
+                }
+            })
+            .catch((message) => {});
     }
 
     return (
@@ -104,14 +100,33 @@ const Register = () => {
                                 size="lg"
                                 placeholder="Type in your username"
                                 value={username}
-                                onChange={(event) =>
-                                    setUsername(event.target.value)
-                                }
+                                onChange={(event) => {
+                                    setUsername(event.target.value);
+                                    setUsernameError(null);
+                                }}
+                                isInvalid={usernameError}
                             />
+                            {usernameError ? (
+                                <Overlay
+                                    target={document.getElementById("username")}
+                                    show={usernameError}
+                                    placement="right"
+                                >
+                                    <Tooltip
+                                        id="username-tooltip"
+                                        style={{
+                                            fontSize: "10px",
+                                        }}
+                                    >
+                                        {usernameError}
+                                    </Tooltip>
+                                </Overlay>
+                            ) : (
+                                <></>
+                            )}
                         </Form.Group>
                     </Col>
                 </Row>
-
                 <Row className="justify-content-center">
                     <Col md="8" lg="6">
                         <Form.Group className="mb-3" controlId="email">
@@ -122,10 +137,30 @@ const Register = () => {
                                 size="lg"
                                 placeholder="Type in your email"
                                 value={email}
-                                onChange={(event) =>
-                                    setEmail(event.target.value)
-                                }
+                                onChange={(event) => {
+                                    setEmail(event.target.value);
+                                    setEmailError(null);
+                                }}
+                                isInvalid={emailError}
                             />
+                            {emailError ? (
+                                <Overlay
+                                    target={document.getElementById("email")}
+                                    show={emailError}
+                                    placement="right"
+                                >
+                                    <Tooltip
+                                        id="email-tooltip"
+                                        style={{
+                                            fontSize: "10px",
+                                        }}
+                                    >
+                                        {emailError}
+                                    </Tooltip>
+                                </Overlay>
+                            ) : (
+                                <></>
+                            )}
                         </Form.Group>
                     </Col>
                 </Row>
@@ -139,21 +174,33 @@ const Register = () => {
                                 size="lg"
                                 placeholder="Type in your password"
                                 value={password}
-                                onChange={(event) =>
-                                    setPassword(event.target.value)
-                                }
-                                isInvalid={!isValidPassword}
+                                onChange={(event) => {
+                                    setPassword(event.target.value);
+                                    setPasswordError(null);
+                                }}
+                                isInvalid={passwordError}
                             />
-                            {!isValidPassword && (
-                                <div className="invalid-feedback">
-                                    The password length must be between 8 and
-                                    40!
-                                </div>
+                            {passwordError ? (
+                                <Overlay
+                                    target={document.getElementById("password")}
+                                    show={passwordError}
+                                    placement="right"
+                                >
+                                    <Tooltip
+                                        id="password-tooltip"
+                                        style={{
+                                            fontSize: "10px",
+                                        }}
+                                    >
+                                        {passwordError}
+                                    </Tooltip>
+                                </Overlay>
+                            ) : (
+                                <></>
                             )}
                         </Form.Group>
                     </Col>
                 </Row>
-
                 <Row className="justify-content-center">
                     <Col
                         md="8"
@@ -165,35 +212,42 @@ const Register = () => {
                                 type="radio"
                                 value="option1"
                                 checked={selectedOption === "option1"}
-                                onChange={(event) =>
-                                    handleOptionChange(event, roles[0])
-                                }
+                                onChange={(event) => {
+                                    handleOptionChange(event, roles[0]);
+                                    setRoleError(null);
+                                }}
                             />
                             {roles[0]}
                         </div>
-                        <h5>Choose a role</h5>
+                        <h5 id="h5">Choose a role</h5>
+                        <Overlay
+                            target={document.getElementById("h5")}
+                            show={roleError}
+                            placement="top"
+                        >
+                            <Tooltip
+                                id="role-tooltip"
+                                style={{
+                                    fontSize: "10px",
+                                }}
+                            >
+                                {roleError}
+                            </Tooltip>
+                        </Overlay>
                         <div>
                             <input
                                 type="radio"
                                 value="option2"
                                 checked={selectedOption === "option2"}
-                                onChange={(event) =>
-                                    handleOptionChange(event, roles[1])
-                                }
+                                onChange={(event) => {
+                                    handleOptionChange(event, roles[1]);
+                                    setRoleError(null);
+                                }}
                             />
                             {roles[1]}
                         </div>
                     </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        {!isValidPassword && (
-                            <div className="invalid-feedback">
-                                The password length must be between 8 and 40!
-                            </div>
-                        )}
-                    </Col>
-                </Row>
+                </Row>{" "}
                 <Row className="justify-content-center">
                     <Col
                         md="8"
