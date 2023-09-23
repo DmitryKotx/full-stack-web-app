@@ -3,6 +3,8 @@ package ru.kotov.AssignmentSubmissionApp.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import ru.kotov.AssignmentSubmissionApp.enums.Role;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,16 +15,17 @@ public class Authority implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String authority;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @ManyToOne(optional = false)
     private User user;
 
     @Override
     public String getAuthority() {
-        return authority;
+        return role.name();
     }
 
-    public Authority(String authority) {
-        this.authority = authority;
+    public Authority(Role role) {
+        this.role = role;
     }
 }
