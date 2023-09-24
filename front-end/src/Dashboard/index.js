@@ -65,7 +65,10 @@ const Dashboard = () => {
             {assignmentsForPage ? (
                 <div
                     className="d-grid gap-5"
-                    style={{ gridTemplateColumns: "repeat(auto-fit, 18rem)" }}
+                    style={{
+                        marginLeft: "100px",
+                        gridTemplateColumns: "repeat(auto-fit, 18rem)",
+                    }}
                 >
                     {assignmentsForPage.map((assignment) => (
                         <Card key={assignment.id} style={{ width: "18rem" }}>
@@ -111,7 +114,6 @@ const Dashboard = () => {
                 }}
             >
                 <Pagination>
-                    <Pagination.Prev />
                     {[...Array(pageCount)].map((_, index) => (
                         <Pagination.Item
                             key={index + 1}
@@ -121,7 +123,6 @@ const Dashboard = () => {
                             {index + 1}
                         </Pagination.Item>
                     ))}
-                    <Pagination.Next />
                 </Pagination>
             </div>
         </div>
