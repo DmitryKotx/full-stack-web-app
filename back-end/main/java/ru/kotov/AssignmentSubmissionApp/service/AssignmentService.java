@@ -53,6 +53,10 @@ public class AssignmentService {
         }
     }
 
+    public Set<Assignment> findByUserUsernameStartingWith(String startUsername) {
+        return assignmentRepository.findByUserUsernameStartingWith(startUsername);
+    }
+
     public Optional<Assignment> findById(Long id) {
         return assignmentRepository.findById(id);
     }
