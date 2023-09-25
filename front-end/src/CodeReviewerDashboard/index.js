@@ -10,7 +10,7 @@ const CodeReviewerDashboard = () => {
     const user = useUser();
     const [assignments, setAssignments] = useState(null);
     const navigate = useNavigate();
-
+    const [searchName, setSearchName] = useState(null);
     useEffect(() => {
         if (!user.jwt) {
             navigate("/login");
@@ -44,10 +44,16 @@ const CodeReviewerDashboard = () => {
         });
     }
 
+    function getAssignments() {
+        ajax(`/api/assignments?username=${searchName}`, "GET", user.jwt).then(
+            (assignmentsData) => {
+                setAssignments(assignmentsData);
+            }
+        );
+    }
+
     useEffect(() => {
-        ajax("/api/assignments", "GET", user.jwt).then((assignmentsData) => {
-            setAssignments(assignmentsData);
-        });
+        getAssignments();
     }, [user.jwt]);
 
     return (
@@ -70,6 +76,24 @@ const CodeReviewerDashboard = () => {
                 <Col>
                     <div className="h1" style={{ marginBottom: "1em" }}>
                         REVIEWER
+                    </div>
+                </Col>
+                <Col>
+                    <div className="search-bar">
+                        <input
+                            type="text"
+                            placeholder="Student name"
+                            value={searchName}
+                            onChange={(e) => setSearchName(e.target.value)}
+                        />
+                        <button
+                            onClick={(e) => {
+                                getAssignments();
+                                setSearchName("");
+                            }}
+                        >
+                            Search
+                        </button>
                     </div>
                 </Col>
             </Row>
@@ -100,7 +124,7 @@ const CodeReviewerDashboard = () => {
                                 >
                                     <Card.Body className="d-flex flex-column justify-content-around">
                                         <Card.Title>
-                                            Assignment #{assignment.number}
+                                            Assignment #{assignment.number}.
                                         </Card.Title>
                                         <div className="d-flex align-items-start">
                                             <StatusBadge
@@ -108,6 +132,12 @@ const CodeReviewerDashboard = () => {
                                             />
                                         </div>
                                         <Card.Text style={{ marginTop: "1em" }}>
+                                            <p>
+                                                <b>
+                                                    Student:{" "}
+                                                    {assignment.user.username}
+                                                </b>
+                                            </p>
                                             <p>
                                                 <b>GitHub URL</b>:{" "}
                                                 {assignment.githubUrl}
