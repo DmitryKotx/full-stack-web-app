@@ -31,8 +31,10 @@ public class AssignmentController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAssignments(@AuthenticationPrincipal User user) {
-        Set<Assignment> assignments = assignmentService.findByUser(user);
+    public ResponseEntity<?> getAssignments(@RequestParam("username") String username, @AuthenticationPrincipal User user) {
+        Set<Assignment> assignments;
+        if (username.equals("null")) assignments = assignmentService.findByUser(user);
+        else assignments = assignmentService.findByUserUsernameStartingWith(username);
         return ResponseEntity.ok(assignments);
     }
 
