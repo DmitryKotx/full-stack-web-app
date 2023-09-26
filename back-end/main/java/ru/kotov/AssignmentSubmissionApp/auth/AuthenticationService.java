@@ -80,18 +80,36 @@ public class AuthenticationService {
         }
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
-        var user = userService.findUserByUsername(request.getUsername()).orElseThrow();
-        var jwtToken = jwtUtil.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+    public AuthenticationResponse authenticate(AuthenticationRequest request, BindingResult bindingResult) {
+        var user = userService.findUserByUsername(request.getUsername()).orElse(null);
+
+        if (user == null) {
+            bindingResult.rejectValue("username", "",
+                    "The user with this username is not registered");
+        }
+
+        if(!isValidPassword(request.getPassword())) {
+            bindingResult.rejectValue("password", "",
+                    """
+                            Password does not meet the criteria:
+                            1) at least one lowercase Latin letter
+                            2) at least one capital Latin letter
+                            3) at least one digit""");
+        }
+        if (!bindingResult.hasErrors()) {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()
+                    )
+            );
+            var jwtToken = jwtUtil.generateToken(user);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        } else {
+            return new AuthenticationResponse();
+        }
     }
 
     public boolean isValidPassword(String password) {
