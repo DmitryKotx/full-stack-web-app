@@ -29,6 +29,17 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request, BindingResult bindingResult) throws JsonProcessingException {
         AuthenticationResponse response = authenticationService.register(request, bindingResult);
+        return getResponseEntity(bindingResult, response);
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticate(
+            @RequestBody AuthenticationRequest request, BindingResult bindingResult) throws JsonProcessingException {
+        AuthenticationResponse response = authenticationService.authenticate(request, bindingResult);
+        return getResponseEntity(bindingResult, response);
+    }
+
+    private ResponseEntity<?> getResponseEntity(BindingResult bindingResult, AuthenticationResponse response) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             Map<String, String> validationErrors = new HashMap<>();
             for (FieldError error : bindingResult.getFieldErrors()) {
@@ -42,12 +53,6 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<?> authenticate(
-            @RequestBody AuthenticationRequest request
-    ) {
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, String.valueOf(authenticationService.authenticate(request).getToken())).build();
-    }
     @GetMapping("/validate")
     public ResponseEntity<?> validationToken (@RequestParam("token") String token, @AuthenticationPrincipal User user) {
         boolean isValidateToken = jwtUtil.isTokenValid(token, user);
