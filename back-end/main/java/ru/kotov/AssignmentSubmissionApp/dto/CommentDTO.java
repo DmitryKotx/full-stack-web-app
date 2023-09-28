@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class CommentDTO {
-    private Long Id;
+    private Long id;
     private Long assignmentId;
     private String text;
     private String user;

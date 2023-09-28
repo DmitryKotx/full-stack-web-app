@@ -12,7 +12,7 @@ import lombok.*;
 public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
     private Integer number;
     private String status;
     private String githubUrl;
