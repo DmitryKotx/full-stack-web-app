@@ -154,7 +154,7 @@ const AssignmentView = () => {
                         </Col>
                     </Form.Group>
 
-                    {assignment.status === "Completed" ? (
+                    {assignment.status === assignmentStatuses[4].status ? (
                         <>
                             <Form.Group
                                 as={Row}
@@ -183,9 +183,14 @@ const AssignmentView = () => {
                                 </Button>
                             </div>
                         </>
-                    ) : assignment.status === "Pending Submission" ? (
+                    ) : assignment.status === assignmentStatuses[0].status ? (
                         <div className="d-flex gap-5">
-                            <Button size="lg" onClick={() => save("Submitted")}>
+                            <Button
+                                size="lg"
+                                onClick={() =>
+                                    save(assignmentStatuses[1].status)
+                                }
+                            >
                                 Submit Assignment
                             </Button>
                             <Button
@@ -200,7 +205,9 @@ const AssignmentView = () => {
                         <div className="d-flex gap-5">
                             <Button
                                 size="lg"
-                                onClick={() => save("Resubmitted")}
+                                onClick={() =>
+                                    save(assignmentStatuses[5].status)
+                                }
                             >
                                 Resubmit Assignment
                             </Button>
