@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
@@ -34,7 +35,8 @@ public class User implements UserDetails {
     @Size(min = 10, max = 30)
     private String email;
     @JsonIgnore
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private List<Authority> authorities = new ArrayList<>();
 
     @Override
