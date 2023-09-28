@@ -29,7 +29,7 @@ public class AuthenticationService {
         if(request.getRole() == null)
             bindingResult.rejectValue("role", "", "Role is not selected!");
 
-        if (!isValidPassword(request.getPassword())) {
+        if (isInvalidPassword(request.getPassword())) {
             bindingResult.rejectValue("password", "",
                     """
                             Password does not meet the criteria:
@@ -88,7 +88,7 @@ public class AuthenticationService {
                     "The user with this username is not registered");
         }
 
-        if(!isValidPassword(request.getPassword())) {
+        if(isInvalidPassword(request.getPassword())) {
             bindingResult.rejectValue("password", "",
                     """
                             Password does not meet the criteria:
@@ -112,10 +112,10 @@ public class AuthenticationService {
         }
     }
 
-    public boolean isValidPassword(String password) {
+    public boolean isInvalidPassword(String password) {
         String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,40}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
+        return !matcher.matches();
     }
 }

@@ -12,8 +12,8 @@ public enum AssignmentStatusEnum {
     RESUBMITTED("Resubmitted", 6);
 
 
-    private String status;
-    private Integer step;
+    private final String status;
+    private final Integer step;
 
     AssignmentStatusEnum(String status, Integer step) {
         this.status = status;

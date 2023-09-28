@@ -8,6 +8,7 @@ import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.io.Serializable;
@@ -52,7 +53,7 @@ public class JwtUtil implements Serializable {
         Map<String, Object> claims = new HashMap<>();
         claims.put("authorities", userDetails.getAuthorities()
                 .stream()
-                .map(auth -> auth.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
         return generateToken(claims, userDetails);
     }
