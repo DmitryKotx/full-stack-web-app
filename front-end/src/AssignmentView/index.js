@@ -22,11 +22,10 @@ const AssignmentView = () => {
     const [assignment, setAssignment] = useState({
         branch: "",
         githubUrl: "",
-        number: "",
+        number: null,
         status: null,
     });
 
-    const [assignmentStatuses, setAssignmentStatuses] = useState([]);
     const [assignments, setAssignments] = useState([]);
     const prevAssignmentValue = useRef(assignment);
 
@@ -54,15 +53,16 @@ const AssignmentView = () => {
             setAssignment(assignmentData);
         });
     }
-
     useEffect(() => {
         if (prevAssignmentValue.current.status !== assignment.status) {
             persist();
         }
         prevAssignmentValue.current = assignment;
-        ajax("/api/assignments", "GET", user.jwt).then((assignmentsData) => {
-            setAssignments(assignmentsData);
-        });
+        ajax("/api/assignments?username=null", "GET", user.jwt).then(
+            (assignmentsData) => {
+                setAssignments(assignmentsData);
+            }
+        );
     }, [assignment]);
 
     useEffect(() => {
@@ -72,11 +72,9 @@ const AssignmentView = () => {
                 if (assignmentData.githubUrl === null)
                     assignmentData.githubUrl = "";
                 setAssignment(assignmentData.assignment);
-                setAssignmentStatuses(assignmentData.statusEnums);
             }
         );
     }, []);
-
     return (
         <Container className="mt-5">
             <Row className="d-flex align-items-center">
@@ -105,7 +103,9 @@ const AssignmentView = () => {
                                         : "Select an Assignment"
                                 }
                                 onSelect={(selectedElement) => {
-                                    window.location.href = `/assignments/${selectedElement}`;
+                                    window.location.href = `/assignments/${
+                                        assignments[selectedElement - 1].id
+                                    }`;
                                 }}
                             >
                                 {assignments.map((assignment) => (
@@ -154,7 +154,7 @@ const AssignmentView = () => {
                         </Col>
                     </Form.Group>
 
-                    {assignment.status === assignmentStatuses[4].status ? (
+                    {assignment.status === "Completed" ? (
                         <>
                             <Form.Group
                                 as={Row}
@@ -183,14 +183,9 @@ const AssignmentView = () => {
                                 </Button>
                             </div>
                         </>
-                    ) : assignment.status === assignmentStatuses[0].status ? (
+                    ) : assignment.status === "Pending Submission" ? (
                         <div className="d-flex gap-5">
-                            <Button
-                                size="lg"
-                                onClick={() =>
-                                    save(assignmentStatuses[1].status)
-                                }
-                            >
+                            <Button size="lg" onClick={() => save("Submitted")}>
                                 Submit Assignment
                             </Button>
                             <Button
@@ -205,9 +200,7 @@ const AssignmentView = () => {
                         <div className="d-flex gap-5">
                             <Button
                                 size="lg"
-                                onClick={() =>
-                                    save(assignmentStatuses[5].status)
-                                }
+                                onClick={() => save("Resubmitted")}
                             >
                                 Resubmit Assignment
                             </Button>
