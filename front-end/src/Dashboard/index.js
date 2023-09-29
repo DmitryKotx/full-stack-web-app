@@ -16,9 +16,11 @@ const Dashboard = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        ajax("/api/assignments", "GET", user.jwt).then((assignmentsData) => {
-            setAssignments(assignmentsData);
-        });
+        ajax("/api/assignments?username=null", "GET", user.jwt).then(
+            (assignmentsData) => {
+                setAssignments(assignmentsData);
+            }
+        );
 
         if (!user.jwt) navigate("/login");
     }, [user.jwt]);
@@ -34,9 +36,6 @@ const Dashboard = () => {
         const endIndex = startIndex + itemsPerPage;
 
         return assignments.slice(startIndex, endIndex);
-    }
-    function setCurrentPage(selectedPage) {
-        setPage(selectedPage);
     }
 
     return (
