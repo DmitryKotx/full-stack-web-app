@@ -22,4 +22,7 @@ public class Assignment {
     private User user;
     @ManyToOne
     private User codeReviewer;
+    @OneToOne
+    private Task task;
+
 }
