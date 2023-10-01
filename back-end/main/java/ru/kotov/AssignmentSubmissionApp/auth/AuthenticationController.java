@@ -10,13 +10,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import ru.kotov.AssignmentSubmissionApp.enums.Role;
 import ru.kotov.AssignmentSubmissionApp.model.User;
 import ru.kotov.AssignmentSubmissionApp.util.JwtUtil;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
