@@ -35,8 +35,7 @@ public class User implements UserDetails {
     @Size(min = 10, max = 30)
     private String email;
     @JsonIgnore
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> authorities = new ArrayList<>();
 
     @Override
