@@ -58,9 +58,4 @@ public class AuthenticationController {
         boolean isValidateToken = jwtUtil.isTokenValid(token, user);
         return ResponseEntity.ok(isValidateToken);
     }
-    @GetMapping("/roles")
-    public ResponseEntity<List<Role>> getRoles() {
-        List<Role> roles = new ArrayList<>(List.of(Role.values()));
-        return ResponseEntity.ok(roles);
-    }
 }
