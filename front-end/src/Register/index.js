@@ -21,7 +21,7 @@ const Register = () => {
     const [passwordError, setPasswordError] = useState(null);
     const [emailError, setEmailError] = useState(null);
     const [roleError, setRoleError] = useState(null);
-    const [roles, setRoles] = useState([]);
+    const roles = ["STUDENT", "REVIEWER"];
     const [role, setRole] = useState(null);
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState("");
@@ -30,9 +30,6 @@ const Register = () => {
         if (user.jwt) {
             navigate("/dashboard");
         }
-        ajax("/api/roles", "GET", user.jwt).then((roles) => {
-            setRoles(roles);
-        });
     }, [user.jwt]);
 
     function handleOptionChange(event, role) {
