@@ -39,7 +39,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div style={{ margin: "1em" }}>
+        <div style={{ margin: "0.5em" }}>
             <Row>
                 <Col>
                     <div
@@ -60,7 +60,6 @@ const Dashboard = () => {
                     Submit New Assignment
                 </Button>
             </div>
-
             {assignmentsForPage ? (
                 <div
                     className="d-grid gap-5"
@@ -84,7 +83,7 @@ const Dashboard = () => {
                                         {assignment.githubUrl}
                                     </p>
                                     <p>
-                                        <b>Branch</b>: {assignment.branch}
+                                        <b>Task number</b>: {assignment.task}
                                     </p>
                                 </Card.Text>
                                 <Button
