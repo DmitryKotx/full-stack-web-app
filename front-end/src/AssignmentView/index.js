@@ -20,9 +20,9 @@ const AssignmentView = () => {
     const navigate = useNavigate();
     const user = useUser();
     const [assignment, setAssignment] = useState({
-        branch: "",
         githubUrl: "",
-        number: null,
+        task: "",
+        number: "",
         status: null,
     });
 
@@ -68,7 +68,6 @@ const AssignmentView = () => {
     useEffect(() => {
         ajax(`/api/assignments/${assignmentId}`, "GET", user.jwt).then(
             (assignmentData) => {
-                if (assignmentData.branch === null) assignmentData.branch = "";
                 if (assignmentData.githubUrl === null)
                     assignmentData.githubUrl = "";
                 setAssignment(assignmentData.assignment);
@@ -138,18 +137,18 @@ const AssignmentView = () => {
                         </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} className="mb-3" controlId="brahch">
+                    <Form.Group as={Row} className="mb-3" controlId="task">
                         <Form.Label column sm="3" md="2">
-                            Brahch:
+                            Task number:
                         </Form.Label>
                         <Col sm="9" md="8" lg="6">
                             <Form.Control
                                 type="text"
-                                placeholder="example_branch_name"
+                                placeholder="example_task_number"
                                 onChange={(e) =>
-                                    updateAssignment("branch", e.target.value)
+                                    updateAssignment("task", e.target.value)
                                 }
-                                value={assignment.branch}
+                                value={assignment.task}
                             />
                         </Col>
                     </Form.Group>
