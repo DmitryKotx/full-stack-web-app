@@ -143,8 +143,8 @@ const CodeReviewerDashboard = () => {
                                                 {assignment.githubUrl}
                                             </p>
                                             <p>
-                                                <b>Branch</b>:{" "}
-                                                {assignment.branch}
+                                                <b>Task number</b>:{" "}
+                                                {assignment.task}
                                             </p>
                                         </Card.Text>
                                         <Button
@@ -205,12 +205,18 @@ const CodeReviewerDashboard = () => {
                                         </div>
                                         <Card.Text style={{ marginTop: "1em" }}>
                                             <p>
+                                                <b>
+                                                    Student:{" "}
+                                                    {assignment.user.username}
+                                                </b>
+                                            </p>
+                                            <p>
                                                 <b>GitHub URL</b>:{" "}
                                                 {assignment.githubUrl}
                                             </p>
                                             <p>
-                                                <b>Branch</b>:{" "}
-                                                {assignment.branch}
+                                                <b>Task number</b>:{" "}
+                                                {assignment.task}
                                             </p>
                                         </Card.Text>
                                         <Button
@@ -264,12 +270,18 @@ const CodeReviewerDashboard = () => {
                                         </div>
                                         <Card.Text style={{ marginTop: "1em" }}>
                                             <p>
+                                                <b>
+                                                    Student:{" "}
+                                                    {assignment.user.username}
+                                                </b>
+                                            </p>
+                                            <p>
                                                 <b>GitHub URL</b>:{" "}
                                                 {assignment.githubUrl}
                                             </p>
                                             <p>
-                                                <b>Branch</b>:{" "}
-                                                {assignment.branch}
+                                                <b>Task number</b>:{" "}
+                                                {assignment.task}
                                             </p>
                                         </Card.Text>
                                         <Button
