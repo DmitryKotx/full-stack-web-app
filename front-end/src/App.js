@@ -12,6 +12,7 @@ import CodeReveiwAssignmentView from "./CodeReveiwAssignmentView";
 import { useUser } from "./UserProvider";
 import Login from "./Login";
 import Register from "./Register";
+import Tasks from "./Tasks";
 
 function App() {
     const [roles, setRoles] = useState([]);
@@ -62,6 +63,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<HomePage />} />
+            <Route path="/tasks" element={<Tasks />} />
         </Routes>
     );
 }
