@@ -12,11 +12,16 @@ const Tasks = () => {
         });
     }, [user.jwt]);
     return (
-        <>
-            {tasks.map((task) => (
-                <div>{task.id}</div>
-            ))}
-        </>
+        <div className="container">
+            <h1>Tasks</h1>
+            <ul className="list-group">
+                {tasks.map((task, index) => (
+                    <li key={index} className="list-group-item">
+                        Task {task.id}: {task.text}
+                    </li>
+                ))}
+            </ul>
+        </div>
     );
 };
 
