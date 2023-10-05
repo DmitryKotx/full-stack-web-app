@@ -97,16 +97,22 @@ public class AuthenticationService {
                             3) at least one digit""");
         }
         if (!bindingResult.hasErrors()) {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getUsername(),
-                            request.getPassword()
-                    )
-            );
-            var jwtToken = jwtUtil.generateToken(user);
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build();
+            try {
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.getUsername(),
+                                request.getPassword()
+                        )
+                );
+                var jwtToken = jwtUtil.generateToken(user);
+                return AuthenticationResponse.builder()
+                        .token(jwtToken)
+                        .build();
+            } catch (Exception e) {
+                bindingResult.rejectValue("password", "","Invalid password");
+                return new AuthenticationResponse();
+            }
+
         } else {
             return new AuthenticationResponse();
         }
