@@ -19,12 +19,17 @@ const AssignmentView = () => {
     const { assignmentId } = useParams();
     const navigate = useNavigate();
     const user = useUser();
+    const [task, setTask] = useState({
+        id: null,
+        text: null,
+    });
     const [assignment, setAssignment] = useState({
         githubUrl: "",
-        task: "",
-        number: "",
+        task,
+        number: null,
         status: null,
     });
+    const [tasks, setTasks] = useState([]);
 
     const [assignments, setAssignments] = useState([]);
     const prevAssignmentValue = useRef(assignment);
@@ -73,7 +78,14 @@ const AssignmentView = () => {
                 setAssignment(assignmentData.assignment);
             }
         );
+        ajax("/api/tasks", "GET", user.jwt).then((tasksList) => {
+            setTasks(tasksList);
+        });
     }, []);
+    useEffect(() => {
+        console.log(task);
+        updateAssignment("task", task);
+    }, [task]);
     return (
         <Container className="mt-5">
             <Row className="d-flex align-items-center">
@@ -142,14 +154,28 @@ const AssignmentView = () => {
                             Task number:
                         </Form.Label>
                         <Col sm="9" md="8" lg="6">
-                            <Form.Control
-                                type="text"
-                                placeholder="example_task_number"
-                                onChange={(e) =>
-                                    updateAssignment("task", e.target.value)
+                            <DropdownButton
+                                as={ButtonGroup}
+                                variant="light"
+                                title={
+                                    task.id
+                                        ? `Task ${task.id}`
+                                        : "Select a task"
                                 }
-                                value={assignment.task}
-                            />
+                                onSelect={(selectedElement) => {
+                                    const temp = tasks[selectedElement - 1];
+                                    setTask(temp);
+                                }}
+                            >
+                                {tasks.map((task) => (
+                                    <Dropdown.Item
+                                        key={task.id}
+                                        eventKey={task.id}
+                                    >
+                                        {task.id}
+                                    </Dropdown.Item>
+                                ))}
+                            </DropdownButton>
                         </Col>
                     </Form.Group>
 
