@@ -83,7 +83,10 @@ const Dashboard = () => {
                                         {assignment.githubUrl}
                                     </p>
                                     <p>
-                                        <b>Task number</b>: {assignment.task}
+                                        <b>Task number</b>:{" "}
+                                        {assignment.task
+                                            ? assignment.task.id
+                                            : ""}
                                     </p>
                                 </Card.Text>
                                 <Button
