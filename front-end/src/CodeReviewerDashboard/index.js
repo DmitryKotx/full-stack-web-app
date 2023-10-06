@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import ajax from "../Services/fetchService";
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import {
+    Button,
+    ButtonGroup,
+    Card,
+    Col,
+    Container,
+    Dropdown,
+    DropdownButton,
+    Row,
+} from "react-bootstrap";
 import jwt_decode from "jwt-decode";
 import StatusBadge from "../StatusBadge";
 import { useNavigate } from "react-router-dom";
@@ -9,8 +18,10 @@ import { useUser } from "../UserProvider";
 const CodeReviewerDashboard = () => {
     const user = useUser();
     const [assignments, setAssignments] = useState(null);
+    const [users, setUsers] = useState([]);
     const navigate = useNavigate();
-    const [searchName, setSearchName] = useState(null);
+    const [inputName, setInputName] = useState(null);
+    const [dropdownName, setDropdownName] = useState(null);
     useEffect(() => {
         if (!user.jwt) {
             navigate("/login");
@@ -44,21 +55,77 @@ const CodeReviewerDashboard = () => {
         });
     }
 
-    function getAssignments() {
-        ajax(`/api/assignments?username=${searchName}`, "GET", user.jwt).then(
+    function getAssignments(name) {
+        ajax(`/api/assignments?username=${name}`, "GET", user.jwt).then(
             (assignmentsData) => {
                 setAssignments(assignmentsData);
             }
         );
     }
+    function getUsers() {
+        ajax(`/api/users`, "GET", user.jwt).then((UsersList) => {
+            setUsers(UsersList);
+        });
+    }
 
     useEffect(() => {
-        getAssignments();
+        getAssignments("null");
+        getUsers();
     }, [user.jwt]);
 
     return (
-        <Container>
-            <Row>
+        <Container style={{ marginTop: "1.5em" }}>
+            <Row className="justify-content-between">
+                <Col className="mb-5">
+                    <div className="h1">REVIEWER</div>
+                </Col>
+                <Col>
+                    <div className=" d-flex justify-content search-bar">
+                        <input
+                            type="text"
+                            placeholder="Student name"
+                            value={inputName}
+                            onChange={(e) => setInputName(e.target.value)}
+                        />
+                        <button
+                            onClick={(e) => {
+                                getAssignments(inputName);
+                                setInputName("");
+                                setDropdownName("");
+                            }}
+                        >
+                            Search
+                        </button>
+                    </div>
+                </Col>
+                <Col>
+                    <div className=" d-flex justify-content ">
+                        <DropdownButton
+                            as={ButtonGroup}
+                            variant="info"
+                            title={
+                                dropdownName
+                                    ? `${dropdownName}`
+                                    : "Select a student name"
+                            }
+                            onSelect={(selectedElement) => {
+                                getAssignments(selectedElement);
+                                setDropdownName(selectedElement);
+                                setInputName("");
+                            }}
+                        >
+                            {users.map((user) => (
+                                <Dropdown.Item
+                                    key={user.username}
+                                    eventKey={user.username}
+                                >
+                                    {user.username}
+                                </Dropdown.Item>
+                            ))}
+                        </DropdownButton>
+                    </div>
+                </Col>
+
                 <Col>
                     <div
                         className="d-flex justify-content-end"
@@ -69,31 +136,6 @@ const CodeReviewerDashboard = () => {
                         }}
                     >
                         Logout
-                    </div>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <div className="h1" style={{ marginBottom: "1em" }}>
-                        REVIEWER
-                    </div>
-                </Col>
-                <Col>
-                    <div className="search-bar">
-                        <input
-                            type="text"
-                            placeholder="Student name"
-                            value={searchName}
-                            onChange={(e) => setSearchName(e.target.value)}
-                        />
-                        <button
-                            onClick={(e) => {
-                                getAssignments();
-                                setSearchName("");
-                            }}
-                        >
-                            Search
-                        </button>
                     </div>
                 </Col>
             </Row>
@@ -144,7 +186,9 @@ const CodeReviewerDashboard = () => {
                                             </p>
                                             <p>
                                                 <b>Task number</b>:{" "}
-                                                {assignment.task}
+                                                {assignment.task
+                                                    ? assignment.task.id
+                                                    : ""}
                                             </p>
                                         </Card.Text>
                                         <Button
@@ -216,7 +260,9 @@ const CodeReviewerDashboard = () => {
                                             </p>
                                             <p>
                                                 <b>Task number</b>:{" "}
-                                                {assignment.task}
+                                                {assignment.task
+                                                    ? assignment.task.id
+                                                    : ""}
                                             </p>
                                         </Card.Text>
                                         <Button
@@ -281,7 +327,9 @@ const CodeReviewerDashboard = () => {
                                             </p>
                                             <p>
                                                 <b>Task number</b>:{" "}
-                                                {assignment.task}
+                                                {assignment.task
+                                                    ? assignment.task.id
+                                                    : ""}
                                             </p>
                                         </Card.Text>
                                         <Button
