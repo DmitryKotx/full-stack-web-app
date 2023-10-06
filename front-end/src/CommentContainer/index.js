@@ -48,10 +48,7 @@ const CommentContainer = (props) => {
             const i = commentsCopy.findIndex(
                 (comment) => comment.id === commentId
             );
-            console.log(commentsCopy);
             commentsCopy.splice(i, 1);
-            console.log(commentsCopy);
-
             setComments(commentsCopy);
         });
     }

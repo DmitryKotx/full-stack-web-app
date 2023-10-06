@@ -50,11 +50,9 @@ const Login = () => {
                 } else {
                     if (body.username) {
                         setUsernameError(body.username);
-                        console.log(body.username);
                     }
                     if (body.password) {
                         setPasswordError(body.password);
-                        console.log(body.password);
                     }
                 }
             })

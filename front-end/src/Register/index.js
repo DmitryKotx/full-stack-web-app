@@ -65,19 +65,15 @@ const Register = () => {
                 } else {
                     if (body.email) {
                         setEmailError(body.email);
-                        console.log(body.email);
                     }
                     if (body.username) {
                         setUsernameError(body.username);
-                        console.log(body.username);
                     }
                     if (body.password) {
                         setPasswordError(body.password);
-                        console.log(body.password);
                     }
                     if (body.role) {
                         setRoleError(body.role);
-                        console.log(body.role);
                     }
                 }
             })
