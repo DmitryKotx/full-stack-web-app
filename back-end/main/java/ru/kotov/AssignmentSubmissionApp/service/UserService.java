@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.kotov.AssignmentSubmissionApp.model.User;
 import ru.kotov.AssignmentSubmissionApp.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,9 @@ public class UserService {
     }
     public void save(User user) {
         userRepository.save(user);
+    }
+    public List<User> findStudents() {
+        return userRepository.findStudents();
     }
 
 }
