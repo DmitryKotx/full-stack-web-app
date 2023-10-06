@@ -76,6 +76,7 @@ const AssignmentView = () => {
                 if (assignmentData.githubUrl === null)
                     assignmentData.githubUrl = "";
                 setAssignment(assignmentData.assignment);
+                setTask(assignmentData.assignment.task);
             }
         );
         ajax("/api/tasks", "GET", user.jwt).then((tasksList) => {
@@ -83,7 +84,6 @@ const AssignmentView = () => {
         });
     }, []);
     useEffect(() => {
-        console.log(task);
         updateAssignment("task", task);
     }, [task]);
     return (
@@ -158,9 +158,7 @@ const AssignmentView = () => {
                                 as={ButtonGroup}
                                 variant="light"
                                 title={
-                                    task.id
-                                        ? `Task ${task.id}`
-                                        : "Select a task"
+                                    task ? `Task ${task.id}` : "Select a task"
                                 }
                                 onSelect={(selectedElement) => {
                                     const temp = tasks[selectedElement - 1];

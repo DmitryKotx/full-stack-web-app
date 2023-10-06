@@ -110,7 +110,7 @@ const CodeReviewAssignmentView = () => {
                                 onChange={(e) =>
                                     updateAssignment("task", e.target.value)
                                 }
-                                value={assignment.task}
+                                value={assignment.task.id}
                             />
                         </Col>
                     </Form.Group>
