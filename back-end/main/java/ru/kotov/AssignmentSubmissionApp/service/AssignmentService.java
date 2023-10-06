@@ -56,6 +56,17 @@ public class AssignmentService {
     public Set<Assignment> findByUserUsernameStartingWith(String startUsername) {
         return assignmentRepository.findByUserUsernameStartingWith(startUsername);
     }
+    public Set<Assignment> findByUsername(String username) {
+        Set<Assignment> assignments = findByUserUsername(username);
+        if(assignments.size() == 0) {
+            assignments = findByUserUsernameStartingWith(username);
+        }
+        return assignments;
+    }
+    public Set<Assignment> findByUserUsername(String startUsername) {
+        return assignmentRepository.findByUserUsername(startUsername);
+    }
+
 
     public Optional<Assignment> findById(Long id) {
         return assignmentRepository.findById(id);
