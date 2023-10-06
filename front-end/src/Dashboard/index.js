@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ajax from "../Services/fetchService";
-import { Button, Card, Col, Pagination, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Pagination, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
@@ -39,11 +39,30 @@ const Dashboard = () => {
     }
 
     return (
-        <div style={{ margin: "0.5em" }}>
-            <Row>
-                <Col>
+        <Container>
+            <Row
+                className="justify-content-between"
+                style={{ marginTop: "1em" }}
+            >
+                <Col className="mb-4">
+                    <div>
+                        <Button size="lg" onClick={() => createAssignment()}>
+                            Submit New Assignment
+                        </Button>
+                    </div>
+                </Col>
+                <Col className="mb-4 text-center">
+                    <div>
+                        <Button
+                            variant="light"
+                            onClick={() => navigate("/tasks")}
+                        >
+                            Tasks list
+                        </Button>
+                    </div>
+                </Col>
+                <Col className="mb-4 d-flex justify-content-end">
                     <div
-                        className="d-flex justify-content-end"
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                             user.setJwt(null);
@@ -55,16 +74,10 @@ const Dashboard = () => {
                 </Col>
             </Row>
 
-            <div className="mb-4">
-                <Button size="lg" onClick={() => createAssignment()}>
-                    Submit New Assignment
-                </Button>
-            </div>
             {assignmentsForPage ? (
                 <div
                     className="d-grid gap-5"
                     style={{
-                        marginLeft: "100px",
                         gridTemplateColumns: "repeat(auto-fit, 18rem)",
                     }}
                 >
@@ -126,7 +139,7 @@ const Dashboard = () => {
                     ))}
                 </Pagination>
             </div>
-        </div>
+        </Container>
     );
 };
 
