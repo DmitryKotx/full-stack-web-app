@@ -10,9 +10,10 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     Set<Assignment> findByUser(User user);
 
     Set<Assignment> findByUserUsernameStartingWith(String startUsername);
+    Set<Assignment> findByUserUsername(String username);
 
     @Query("select a from Assignment a" +
-            " where (a.status = 'submitted' and (a.codeReviewer is null or a.codeReviewer = : codeReviewer))" +
+            " where ((a.status = 'submitted' or a.status = 'resubmitted') and (a.codeReviewer is null or a.codeReviewer = : codeReviewer))" +
             " or a.codeReviewer = :codeReviewer")
     Set<Assignment> findByCodeReviewer(User codeReviewer);
 }
