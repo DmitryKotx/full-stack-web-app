@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "../UserProvider";
 import ajax from "../Services/fetchService";
 
-const Tasks = () => {
+const AssignmentTasks = () => {
     const user = useUser();
     const [tasks, setTasks] = useState([]);
 
@@ -25,4 +25,4 @@ const Tasks = () => {
     );
 };
 
-export default Tasks;
+export default AssignmentTasks;
