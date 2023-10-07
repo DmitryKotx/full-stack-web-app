@@ -57,7 +57,7 @@ const Dashboard = () => {
                             variant="light"
                             onClick={() => navigate("/tasks")}
                         >
-                            Tasks list
+                            Task list
                         </Button>
                     </div>
                 </Col>

@@ -80,7 +80,7 @@ const CodeReviewerDashboard = () => {
                     <div className="h1">REVIEWER</div>
                 </Col>
                 <Col>
-                    <div className=" d-flex justify-content search-bar">
+                    <div className=" d-flex justify-content-center search-bar">
                         <input
                             type="text"
                             placeholder="Student name"
@@ -99,7 +99,7 @@ const CodeReviewerDashboard = () => {
                     </div>
                 </Col>
                 <Col>
-                    <div className=" d-flex justify-content ">
+                    <div className=" d-flex justify-content-center">
                         <DropdownButton
                             as={ButtonGroup}
                             variant="info"
@@ -123,6 +123,16 @@ const CodeReviewerDashboard = () => {
                                 </Dropdown.Item>
                             ))}
                         </DropdownButton>
+                    </div>
+                </Col>
+                <Col className="mb-4 d-flex justify-content-center">
+                    <div>
+                        <Button
+                            variant="light"
+                            onClick={() => navigate("/tasks")}
+                        >
+                            Task list
+                        </Button>
                     </div>
                 </Col>
 
