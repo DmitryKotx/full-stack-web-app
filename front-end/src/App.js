@@ -12,7 +12,9 @@ import CodeReveiwAssignmentView from "./CodeReveiwAssignmentView";
 import { useUser } from "./UserProvider";
 import Login from "./Login";
 import Register from "./Register";
-import Tasks from "./Tasks";
+import AssignmentTasks from "./AssignmentTasks";
+import CodeReviewerTasks from "./CodeReviewerTasks";
+import TaskView from "./TaskView";
 
 function App() {
     const [roles, setRoles] = useState([]);
@@ -60,10 +62,25 @@ function App() {
                     )
                 }
             />
+
+            <Route
+                path="/tasks"
+                element={
+                    roles && roles.find((role) => role === "REVIEWER") ? (
+                        <PrivateRout>
+                            <CodeReviewerTasks />
+                        </PrivateRout>
+                    ) : (
+                        <PrivateRout>
+                            <AssignmentTasks />
+                        </PrivateRout>
+                    )
+                }
+            />
+            <Route path="/tasks/:taskId" element={<TaskView />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<HomePage />} />
-            <Route path="/tasks" element={<Tasks />} />
         </Routes>
     );
 }
