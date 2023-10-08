@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../UserProvider";
 import ajax from "../Services/fetchService";
-import { Button } from "react-bootstrap";
+import { Button, Container, ListGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const CodeReviewerTasks = () => {
@@ -22,25 +22,29 @@ const CodeReviewerTasks = () => {
     }, [user.jwt]);
 
     return (
-        <div className="container">
+        <Container className="mt-4 mb-4">
             <h1>Tasks</h1>
-            <ul className="list-group">
-                {tasks.map((task, index) => (
-                    <li key={index} className="list-group-item">
-                        Task {task.id}: {task.text}
-                        <br />
-                        <Button
-                            variant="info"
-                            onClick={() => navigate(`/tasks/${task.id}`)}
-                        >
-                            Edit task
-                        </Button>
-                    </li>
+            <ListGroup>
+                {tasks.map((task) => (
+                    <ListGroup.Item key={task.id}>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <span className="task-text">
+                                Task {task.id}: {task.text}
+                            </span>
+                            <Button
+                                variant="info"
+                                onClick={() => navigate(`/tasks/${task.id}`)}
+                            >
+                                Edit Task
+                            </Button>
+                        </div>
+                    </ListGroup.Item>
                 ))}
-            </ul>
-            <br />
-            <Button onClick={() => addTask()}>Add task</Button>
-        </div>
+            </ListGroup>
+            <div className="mt-3">
+                <Button onClick={() => addTask()}>Add Task</Button>
+            </div>
+        </Container>
     );
 };
 
