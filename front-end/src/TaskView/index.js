@@ -34,28 +34,29 @@ const TaskView = () => {
 
     return (
         <Container>
-            <Form.Group as={Row} className="my-3" controlId="text">
+            <h2 className="my-4">Edit Task</h2>
+            <Form.Group as={Row} controlId="text">
                 <Form.Label column sm="3" md="2">
                     Task text:
                 </Form.Label>
                 <Col sm="9" md="8" lg="6">
                     <Form.Control
-                        type="url"
-                        placeholder="some text"
+                        type="text"
+                        placeholder="Enter task text"
                         onChange={(e) => updateTask("text", e.target.value)}
                         value={task.text}
-                        style={{ whiteSpace: "pre-wrap", minHeight: "3em" }}
+                        style={{ minHeight: "3em" }}
                     />
                 </Col>
             </Form.Group>
-            <br />
             <Button
+                variant="primary"
                 onClick={() => {
                     saveTask(task);
                     navigate("/tasks");
                 }}
             >
-                Save task
+                Save Task
             </Button>
         </Container>
     );
