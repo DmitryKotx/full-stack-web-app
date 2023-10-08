@@ -33,3 +33,8 @@
     justify-content: space-between;
     width: 200px;
 }
+
+.task-text {
+    max-width: 80%;
+    word-wrap: break-word;
+}
