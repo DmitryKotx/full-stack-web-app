@@ -42,4 +42,5 @@ public class CommentService {
     public Set<Comment> getCommentsByAssignment(Long assignmentId) {
         return commentRepository.findByAssignmentId(assignmentId);
     }
+    //TODO: add a check for an empty comment
 }
