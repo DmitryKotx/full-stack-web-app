@@ -22,4 +22,5 @@ public class TaskService {
     public Optional<Task> getTask(Long id) {
         return taskRepository.findById(id);
     }
+    //TODO: add a check for the absence of text in the task
 }
