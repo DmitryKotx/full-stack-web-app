@@ -75,4 +75,6 @@ public class AssignmentService {
     public Assignment save(Assignment assignment) {
         return assignmentRepository.save(assignment);
     }
+
+    //TODO: add a check for unfilled assignment properties
 }
