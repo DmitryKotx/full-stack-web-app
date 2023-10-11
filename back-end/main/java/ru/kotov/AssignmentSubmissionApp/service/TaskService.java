@@ -2,6 +2,7 @@ package ru.kotov.AssignmentSubmissionApp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import ru.kotov.AssignmentSubmissionApp.model.Task;
 import ru.kotov.AssignmentSubmissionApp.repository.TaskRepository;
 
@@ -22,5 +23,13 @@ public class TaskService {
     public Optional<Task> getTask(Long id) {
         return taskRepository.findById(id);
     }
-    //TODO: add a check for the absence of text in the task
-}
+    public Task save (Task task, BindingResult bindingResult) {
+        if(task.getText() == null) {
+            bindingResult.rejectValue("text", "", "The text field should not be empty");
+        }
+        if(bindingResult.hasErrors()) {
+            return new Task();
+        } else {
+            return taskRepository.save(task);
+        }
+    }}
