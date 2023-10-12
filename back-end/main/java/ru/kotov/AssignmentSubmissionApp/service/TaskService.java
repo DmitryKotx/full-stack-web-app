@@ -24,7 +24,7 @@ public class TaskService {
         return taskRepository.findById(id);
     }
     public Task save (Task task, BindingResult bindingResult) {
-        if(task.getText() == null) {
+        if(task.getText() == null || task.getText().equals("")) {
             bindingResult.rejectValue("text", "", "The text field should not be empty");
             return new Task();
         } else {
