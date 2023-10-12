@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../UserProvider";
 import ajax from "../Services/fetchService";
-import { Button } from "react-bootstrap";
+import { Button, Col, Form, Overlay, Tooltip } from "react-bootstrap";
 import Comment from "../Comment";
 import { useInterval } from "../util/useInterval";
 import dayjs from "dayjs";
@@ -16,6 +16,7 @@ const CommentContainer = (props) => {
         user: user.jwt,
         createdDate: null,
     };
+    const [textError, setTextError] = useState();
     const [comment, setComment] = useState(emptyComment);
     const [comments, setComments] = useState([]);
 
@@ -54,32 +55,33 @@ const CommentContainer = (props) => {
     }
 
     function submitComment() {
-        if (comment.text !== "") {
-            if (comment.id) {
-                ajax(
-                    `/api/comments/${comment.id}`,
-                    "PUT",
-                    user.jwt,
-                    comment
-                ).then((data) => {
-                    const commentsCopy = [...comments];
-                    const i = comments.findIndex(
-                        (comment) => comment.id === data.id
-                    );
-                    commentsCopy[i] = data;
-                    setComments(commentsCopy);
-                    setComment(emptyComment);
-                });
-            } else {
-                ajax("/api/comments", "POST", user.jwt, comment).then(
-                    (data) => {
+        if (comment.id) {
+            ajax(`/api/comments/${comment.id}`, "PUT", user.jwt, comment).then(
+                (data) => {
+                    if (data && data.id) {
                         const commentsCopy = [...comments];
-                        commentsCopy.push(data);
+                        const i = comments.findIndex(
+                            (comment) => comment.id === data.id
+                        );
+                        commentsCopy[i] = data;
                         setComments(commentsCopy);
                         setComment(emptyComment);
+                    } else {
+                        setTextError(data.text);
                     }
-                );
-            }
+                }
+            );
+        } else {
+            ajax("/api/comments", "POST", user.jwt, comment).then((data) => {
+                if (data && data.id) {
+                    const commentsCopy = [...comments];
+                    commentsCopy.push(data);
+                    setComments(commentsCopy);
+                    setComment(emptyComment);
+                } else {
+                    setTextError(data.text);
+                }
+            });
         }
     }
     useEffect(() => {
@@ -102,11 +104,41 @@ const CommentContainer = (props) => {
     return (
         <>
             <div className="mt-5">
-                <textarea
-                    style={{ width: "100%", borderRadius: "0.25em" }}
-                    onChange={(e) => updateComment(e.target.value)}
-                    value={comment.text}
-                ></textarea>
+                <Form.Group controlId="text">
+                    <Col sm="9" md="8" lg="6">
+                        <Form.Control
+                            className="mb-3"
+                            type="text"
+                            controlId="text"
+                            placeholder="some text"
+                            value={comment.text}
+                            onChange={(event) => {
+                                updateComment(event.target.value);
+                                setTextError(null);
+                            }}
+                            isInvalid={textError}
+                        />
+                        {textError ? (
+                            <Overlay
+                                target={document.getElementById("text")}
+                                show={textError}
+                                placement="right"
+                            >
+                                <Tooltip
+                                    id="tetx-tooltip"
+                                    style={{
+                                        fontSize: "10px",
+                                    }}
+                                >
+                                    {textError}
+                                </Tooltip>
+                            </Overlay>
+                        ) : (
+                            <></>
+                        )}
+                    </Col>
+                </Form.Group>
+
                 <Button onClick={() => submitComment()}>Post Comment</Button>
             </div>
             <div className="mt-5">
