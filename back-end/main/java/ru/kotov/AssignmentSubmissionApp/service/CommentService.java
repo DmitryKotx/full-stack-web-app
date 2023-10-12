@@ -2,6 +2,7 @@ package ru.kotov.AssignmentSubmissionApp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import ru.kotov.AssignmentSubmissionApp.dto.CommentDTO;
 import ru.kotov.AssignmentSubmissionApp.model.Assignment;
 import ru.kotov.AssignmentSubmissionApp.model.Comment;
@@ -19,20 +20,26 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final AssignmentRepository assignmentRepository;
-    public Comment save(CommentDTO commentDTO, User user) {
-        Comment comment = new Comment();
-        Optional<Assignment> assignment = assignmentRepository.findById(commentDTO.getAssignmentId());
+    public Comment save(CommentDTO commentDTO, User user, BindingResult bindingResult) {
+        if(commentDTO.getText().equals("")) {
+            bindingResult.rejectValue("text", "",
+                    "The field with the comment text should not be empty");
+            return new Comment();
+        } else {
+            Comment comment = new Comment();
+            Optional<Assignment> assignment = assignmentRepository.findById(commentDTO.getAssignmentId());
 
-        comment.setId(commentDTO.getId());
-        comment.setAssignment(assignment.orElse(null));
-        comment.setText(commentDTO.getText());
-        comment.setCreatedBy(user);
-        if(comment.getId() == null)
-            comment.setCreatedDate(LocalDateTime.now());
-        else
-            comment.setCreatedDate(commentDTO.getCreatedDate());
+            comment.setId(commentDTO.getId());
+            comment.setAssignment(assignment.orElse(null));
+            comment.setText(commentDTO.getText());
+            comment.setCreatedBy(user);
+            if (comment.getId() == null)
+                comment.setCreatedDate(LocalDateTime.now());
+            else
+                comment.setCreatedDate(commentDTO.getCreatedDate());
 
-        return commentRepository.save(comment);
+            return commentRepository.save(comment);
+        }
     }
 
     public void delete( Long commentId) {
