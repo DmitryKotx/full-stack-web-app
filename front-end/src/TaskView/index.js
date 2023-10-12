@@ -64,6 +64,7 @@ const TaskView = () => {
                         }}
                         value={task.text}
                         style={{ minHeight: "3em" }}
+                        isInvalid={textError}
                     />
                     {textError ? (
                         <Overlay
