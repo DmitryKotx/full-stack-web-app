@@ -1,8 +1,10 @@
 package ru.kotov.AssignmentSubmissionApp.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kotov.AssignmentSubmissionApp.dto.AssignmentResponseDTO;
 import ru.kotov.AssignmentSubmissionApp.model.Assignment;
@@ -10,6 +12,7 @@ import ru.kotov.AssignmentSubmissionApp.model.User;
 import ru.kotov.AssignmentSubmissionApp.service.AssignmentService;
 import ru.kotov.AssignmentSubmissionApp.service.UserService;
 import ru.kotov.AssignmentSubmissionApp.util.AuthorityUtil;
+import ru.kotov.AssignmentSubmissionApp.util.JsonUtil;
 
 import java.util.Optional;
 import java.util.Set;
@@ -45,7 +48,7 @@ public class AssignmentController {
     }
     @PutMapping("{id}")
     public ResponseEntity<?> updateAssignment(@PathVariable Long id, @RequestBody Assignment assignment,
-                                              @AuthenticationPrincipal User user) {
+                                              @AuthenticationPrincipal User user, BindingResult bindingResult) throws JsonProcessingException {
         if (assignment.getCodeReviewer() != null) {
             User codeReviewer = assignment.getCodeReviewer();
             codeReviewer = userService.findUserByUsername(codeReviewer.getUsername()).orElse(new User());
@@ -54,8 +57,13 @@ public class AssignmentController {
                 assignment.setCodeReviewer(codeReviewer);
             }
         }
-        Assignment updateAssignment = assignmentService.save(assignment);
-        return ResponseEntity.ok(updateAssignment);
+        Assignment updateAssignment = assignmentService.save(assignment,bindingResult);
+
+        if(bindingResult.hasErrors()) {
+            return ResponseEntity.ok(JsonUtil.getJson(bindingResult));
+        } else {
+            return ResponseEntity.ok(updateAssignment);
+        }
     }
 
 }
