@@ -8,7 +8,9 @@ import {
     Dropdown,
     DropdownButton,
     Form,
+    Overlay,
     Row,
+    Tooltip,
 } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,6 +21,8 @@ const AssignmentView = () => {
     const { assignmentId } = useParams();
     const navigate = useNavigate();
     const user = useUser();
+    const [taskError, setTaskError] = useState();
+    const [githubUrlError, setGithubUrlError] = useState();
     const [task, setTask] = useState({
         id: null,
         text: null,
@@ -32,7 +36,6 @@ const AssignmentView = () => {
     const [tasks, setTasks] = useState([]);
 
     const [assignments, setAssignments] = useState([]);
-    const prevAssignmentValue = useRef(assignment);
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -40,35 +43,22 @@ const AssignmentView = () => {
         setAssignment(newAssignment);
     }
 
-    function save(status) {
-        if (status && assignment.status !== status) {
-            updateAssignment("status", status);
-        } else {
-            persist();
-        }
-    }
-
-    function persist() {
+    function save(prevStatus) {
         ajax(
             `/api/assignments/${assignmentId}`,
             "PUT",
             user.jwt,
             assignment
         ).then((assignmentData) => {
-            setAssignment(assignmentData);
+            if (assignmentData && assignmentData.id) {
+                setAssignment(assignmentData);
+            } else {
+                setTaskError(assignmentData.task);
+                setGithubUrlError(assignmentData.githubUrl);
+                updateAssignment("status", prevStatus);
+            }
         });
     }
-    useEffect(() => {
-        if (prevAssignmentValue.current.status !== assignment.status) {
-            persist();
-        }
-        prevAssignmentValue.current = assignment;
-        ajax("/api/assignments?username=null", "GET", user.jwt).then(
-            (assignmentsData) => {
-                setAssignments(assignmentsData);
-            }
-        );
-    }, [assignment]);
 
     useEffect(() => {
         ajax(`/api/assignments/${assignmentId}`, "GET", user.jwt).then(
@@ -79,6 +69,11 @@ const AssignmentView = () => {
                 setTask(assignmentData.assignment.task);
             }
         );
+        ajax("/api/assignments?username=null", "GET", user.jwt).then(
+            (assignmentsData) => {
+                setAssignments(assignmentsData);
+            }
+        );
         ajax("/api/tasks", "GET", user.jwt).then((tasksList) => {
             setTasks(tasksList);
         });
@@ -86,6 +81,7 @@ const AssignmentView = () => {
     useEffect(() => {
         updateAssignment("task", task);
     }, [task]);
+
     return (
         <Container className="mt-5">
             <Row className="d-flex align-items-center">
@@ -138,14 +134,36 @@ const AssignmentView = () => {
                             <Form.Control
                                 type="url"
                                 placeholder="https://github.com/username/repo-name"
-                                onChange={(e) =>
+                                onChange={(e) => {
                                     updateAssignment(
                                         "githubUrl",
                                         e.target.value
-                                    )
-                                }
+                                    );
+                                    setGithubUrlError(null);
+                                }}
+                                isInvalid={githubUrlError}
                                 value={assignment.githubUrl}
                             />
+                            {githubUrlError ? (
+                                <Overlay
+                                    target={document.getElementById(
+                                        "githubUrl"
+                                    )}
+                                    show={githubUrlError}
+                                    placement="right"
+                                >
+                                    <Tooltip
+                                        id="githubUrl"
+                                        style={{
+                                            fontSize: "10px",
+                                        }}
+                                    >
+                                        {githubUrlError}
+                                    </Tooltip>
+                                </Overlay>
+                            ) : (
+                                <></>
+                            )}
                         </Col>
                     </Form.Group>
 
@@ -155,6 +173,7 @@ const AssignmentView = () => {
                         </Form.Label>
                         <Col sm="9" md="8" lg="6">
                             <DropdownButton
+                                className={taskError ? "error-dropdown" : ""}
                                 as={ButtonGroup}
                                 variant="light"
                                 title={
@@ -163,6 +182,7 @@ const AssignmentView = () => {
                                 onSelect={(selectedElement) => {
                                     const temp = tasks[selectedElement - 1];
                                     setTask(temp);
+                                    setTaskError(null);
                                 }}
                             >
                                 {tasks.map((task) => (
@@ -208,7 +228,14 @@ const AssignmentView = () => {
                         </>
                     ) : assignment.status === "Pending Submission" ? (
                         <div className="d-flex gap-5">
-                            <Button size="lg" onClick={() => save("Submitted")}>
+                            <Button
+                                size="lg"
+                                onClick={() => {
+                                    const prevStatus = assignment.status;
+                                    assignment.status = "Submitted";
+                                    save(prevStatus);
+                                }}
+                            >
                                 Submit Assignment
                             </Button>
                             <Button
@@ -223,7 +250,11 @@ const AssignmentView = () => {
                         <div className="d-flex gap-5">
                             <Button
                                 size="lg"
-                                onClick={() => save("Resubmitted")}
+                                onClick={() => {
+                                    const prevStatus = assignment.status;
+                                    assignment.status = "Resubmitted";
+                                    save(prevStatus);
+                                }}
                             >
                                 Resubmit Assignment
                             </Button>
