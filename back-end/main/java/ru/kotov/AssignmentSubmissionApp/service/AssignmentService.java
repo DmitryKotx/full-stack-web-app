@@ -2,6 +2,7 @@ package ru.kotov.AssignmentSubmissionApp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import ru.kotov.AssignmentSubmissionApp.enums.AssignmentStatusEnum;
 import ru.kotov.AssignmentSubmissionApp.model.Assignment;
 import ru.kotov.AssignmentSubmissionApp.model.User;
@@ -72,9 +73,18 @@ public class AssignmentService {
         return assignmentRepository.findById(id);
     }
 
-    public Assignment save(Assignment assignment) {
-        return assignmentRepository.save(assignment);
+    public Assignment save(Assignment assignment, BindingResult bindingResult) {
+        if(assignment.getTask() == null) {
+            bindingResult.rejectValue("task", "", "Select a task");
+        }
+        if(assignment.getGithubUrl() == null || assignment.getGithubUrl().equals("")) {
+            bindingResult.rejectValue("githubUrl", "", "The field with a link to github should not be empty");
+        }
+        if(bindingResult.hasErrors()) {
+            return new Assignment();
+        } else {
+            return assignmentRepository.save(assignment);
+        }
     }
 
-    //TODO: add a check for unfilled assignment properties
 }
