@@ -38,3 +38,7 @@
     max-width: 80%;
     word-wrap: break-word;
 }
+
+.error-dropdown .btn-light {
+    background-color: #f8d7da; /* Цвет фона при ошибке (красный) */
+}
