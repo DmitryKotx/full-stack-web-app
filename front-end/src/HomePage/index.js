@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useUser } from "../UserProvider";
 import { useNavigate } from "react-router-dom";
 
