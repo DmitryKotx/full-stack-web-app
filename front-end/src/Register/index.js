@@ -10,7 +10,6 @@ import {
     Row,
     Tooltip,
 } from "react-bootstrap";
-import ajax from "../Services/fetchService";
 
 const Register = () => {
     const user = useUser();
