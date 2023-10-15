@@ -13,8 +13,13 @@
 На данный момент проект является завершенным, но, в случае появления новых идей, будут вноситься изменения.
 
 Стек:
+
 backend: Java, Spring Framework (Spring Boot, Spring Data Spring JPA, Spring Web, Spring Security)
+
 frontend: JavaScript, React.js
+
 data base: MySQL
+
 IDE: IntelliJ IDEA
+
 build system: Maven
