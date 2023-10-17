@@ -20,7 +20,6 @@ const CodeReviewerDashboard = () => {
     const [assignments, setAssignments] = useState(null);
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
-    const [inputName, setInputName] = useState(null);
     const [dropdownName, setDropdownName] = useState(null);
     useEffect(() => {
         if (!user.jwt) {
@@ -79,27 +78,8 @@ const CodeReviewerDashboard = () => {
                 <Col className="mb-5">
                     <div className="h1">REVIEWER</div>
                 </Col>
-                <Col>
-                    <div className=" d-flex justify-content-center search-bar">
-                        <input
-                            type="text"
-                            placeholder="Student name"
-                            value={inputName}
-                            onChange={(e) => setInputName(e.target.value)}
-                        />
-                        <button
-                            onClick={(e) => {
-                                getAssignments(inputName);
-                                setInputName("");
-                                setDropdownName("");
-                            }}
-                        >
-                            Search
-                        </button>
-                    </div>
-                </Col>
-                <Col>
-                    <div className=" d-flex justify-content-center">
+                <Col className=" d-flex justify-content-center">
+                    <div>
                         <DropdownButton
                             as={ButtonGroup}
                             variant="info"
@@ -111,7 +91,6 @@ const CodeReviewerDashboard = () => {
                             onSelect={(selectedElement) => {
                                 getAssignments(selectedElement);
                                 setDropdownName(selectedElement);
-                                setInputName("");
                             }}
                         >
                             {users.map((user) => (
