@@ -8,8 +8,6 @@ import java.util.Set;
 
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     Set<Assignment> findByUser(User user);
-
-    Set<Assignment> findByUserUsernameStartingWith(String startUsername);
     Set<Assignment> findByUserUsername(String username);
 
     @Query("select a from Assignment a" +
