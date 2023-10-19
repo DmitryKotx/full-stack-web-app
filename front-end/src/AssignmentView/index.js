@@ -36,6 +36,7 @@ const AssignmentView = () => {
     const [tasks, setTasks] = useState([]);
 
     const [assignments, setAssignments] = useState([]);
+    const [assignmentStatuses, setAssignmentStatuses] = useState([]);
 
     function updateAssignment(prop, value) {
         const newAssignment = { ...assignment };
@@ -66,6 +67,7 @@ const AssignmentView = () => {
                 if (assignmentData.githubUrl === null)
                     assignmentData.githubUrl = "";
                 setAssignment(assignmentData.assignment);
+                setAssignmentStatuses(assignmentData.statusEnums);
                 setTask(assignmentData.assignment.task);
             }
         );
@@ -78,6 +80,7 @@ const AssignmentView = () => {
             setTasks(tasksList);
         });
     }, []);
+
     useEffect(() => {
         updateAssignment("task", task);
     }, [task]);
@@ -232,7 +235,8 @@ const AssignmentView = () => {
                                 size="lg"
                                 onClick={() => {
                                     const prevStatus = assignment.status;
-                                    assignment.status = "Submitted";
+                                    assignment.status =
+                                        assignmentStatuses[1].status;
                                     save(prevStatus);
                                 }}
                             >
@@ -252,7 +256,8 @@ const AssignmentView = () => {
                                 size="lg"
                                 onClick={() => {
                                     const prevStatus = assignment.status;
-                                    assignment.status = "Resubmitted";
+                                    assignment.status =
+                                        assignmentStatuses[5].status;
                                     save(prevStatus);
                                 }}
                             >
