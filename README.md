@@ -7,7 +7,7 @@
 
 <p align="center">
   <kbd>
-    <img src="![image](https://github.com/DmitryKotx/full-stack-web-app/assets/109358996/1df5dac2-44a5-4669-b524-b2b64297881d)" />
+    <img src="https://github.com/DmitryKotx/full-stack-web-app/assets/109358996/1df5dac2-44a5-4669-b524-b2b64297881d" />
   </kbd>
 </p>
 ![image](https://github.com/DmitryKotx/full-stack-web-app/assets/109358996/1df5dac2-44a5-4669-b524-b2b64297881d)
