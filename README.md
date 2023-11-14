@@ -27,8 +27,8 @@ Dashvoard преподавателя:
 
 ### Стек:
 
-backend: Java, Spring Framework (Spring Boot, Spring Data Spring JPA, Spring Web, Spring Security)  
+backend: Java, Spring Framework (Spring Boot, Spring Data Spring JPA, Spring Web, Spring Security), Lombok
 frontend: JavaScript, React.js  
-data base: MySQL  
-IDE: IntelliJ IDEA  
+database: MySQL  
+IDE: IntelliJ IDEA, Visual Studio Code
 build system: Maven  
